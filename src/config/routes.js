@@ -8,6 +8,7 @@ const SignIn = lazy(() => import('../pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('../pages/SignUp/SignUp'))
 const About = lazy(() => import('../pages/About/About'))
 const Home = lazy(() => import('../pages/Home/Home'))
+const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
 const DialogDemo = lazy(() => import('../pages/DialogDemo/DialogDemo'))
 const ToastDemo = lazy(() => import('../pages/ToastDemo/ToastDemo'))
 
@@ -22,9 +23,11 @@ const routes = [
   />,
 
   <Route path="/about" exact component={About} />,
-  <PrivateRoute path="/home" exact component={Home} />,
-  <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,
-  <PrivateRoute path="/toast_demo" exact component={ToastDemo} />,
+  // <PrivateRoute path="/home" exact component={Home} />,
+  <PrivateRoute path="/home" exact component={CampaignStatus} />,
+  <PrivateRoute path="/campaign/status" exact component={CampaignStatus} />,
+  // <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,
+  // <PrivateRoute path="/toast_demo" exact component={ToastDemo} />,
 ]
 
 export default routes

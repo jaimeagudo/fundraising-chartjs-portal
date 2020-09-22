@@ -1,9 +1,6 @@
 import request from './request'
-// const EFP_API_SERVER = `https://staging.efp.betadog.io/campaign/status/BDIPA`;
-const FIELD_WITH_PENCES = ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences']
-const EFP_API_SERVER = `http://local.efp.betadog.io:3000`
-// const EFP_API_SERVER = `http://local.efp.betadog.io:4000`
-//const accessToken= 'good-people-drink-good-beer'
+import api from '../config/api'
+
 
 const requestEfpApi = (url, options) => {
   //TODO replace with useAuth
@@ -14,7 +11,7 @@ const requestEfpApi = (url, options) => {
     "Content-Type": "application/json",
     "Accept": "application/json"
   }
-  return request(EFP_API_SERVER + url, { ...options, headers })
+  return request(api.server + url, { ...options, headers })
 }
 
 const authenticate = async (email, password) =>
@@ -23,4 +20,4 @@ const authenticate = async (email, password) =>
     body: JSON.stringify({ username: email, password }),
   })
 
-export default { requestEfpApi, authenticate, FIELD_WITH_PENCES }
+export default { requestEfpApi, authenticate }

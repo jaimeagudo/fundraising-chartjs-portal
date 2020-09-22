@@ -5,8 +5,10 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import x from '../../services/efpApiClient';
+import efpApiClient from '../../services/efpApiClient';
 import AgnosticTableMapper from 'components/AgnosticTableMapper'
+import api from '../../config/api'
+
 import { useIntl, FormattedMessage } from 'react-intl'
 
 
@@ -26,7 +28,7 @@ export function CampaignStatus() {
   useEffect(() => {
     async function fetchData() {
       // eslint-disable-next-line no-console
-      const response = await x.requestEfpApi('/campaign/status/BDIPA').catch(setError);
+      const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
       setStatus(response);
     }
     fetchData();
@@ -42,7 +44,7 @@ export function CampaignStatus() {
       <Scrollbar
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
       >
-        <AgnosticTableMapper obj={status} classes={classes} fieldsWithPences={x.FIELD_WITH_PENCES} />
+        <AgnosticTableMapper obj={status} classes={classes} fieldsWithPences={api.fieldsWithPences} />
         <FormControl component="fieldset" error={!!error} className={classes.formControl}>
           <FormHelperText>{(error && error.message) || ''}</FormHelperText>
         </FormControl>

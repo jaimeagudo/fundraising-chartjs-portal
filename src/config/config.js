@@ -1,4 +1,5 @@
 import React, { lazy } from 'react'
+import api from './api'
 import locales from './locales'
 import routes from './routes'
 import getMenuItems from './menuItems'
@@ -31,7 +32,7 @@ const config = {
     LandingPage: false, // lazy(() => import('../pages/LandingPage/LandingPage')),
     PageNotFound: lazy(() => import('../pages/PageNotFound/PageNotFound')),
   },
-  // LandingPage: false
+  api,
 }
 
 export default config
