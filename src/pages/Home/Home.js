@@ -13,6 +13,7 @@ const HomePage = () => {
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
       >
         {intl.formatMessage({ id: 'home' })}
+Support portal web for EFP
       </Scrollbar>
     </Page>
   )

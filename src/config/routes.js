@@ -6,7 +6,6 @@ import { Route } from 'react-router-dom'
 
 const SignIn = lazy(() => import('../pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('../pages/SignUp/SignUp'))
-const PasswordReset = lazy(() => import('../pages/PasswordReset/PasswordReset'))
 const About = lazy(() => import('../pages/About/About'))
 const Home = lazy(() => import('../pages/Home/Home'))
 const DialogDemo = lazy(() => import('../pages/DialogDemo/DialogDemo'))
@@ -15,12 +14,13 @@ const ToastDemo = lazy(() => import('../pages/ToastDemo/ToastDemo'))
 const routes = [
   <PublicRoute path="/signin" redirectTo="/" exact component={SignIn} />,
   <PublicRoute path="/signup" redirectTo="/" exact component={SignUp} />,
-  <PublicRoute
-    path="/password_reset"
-    redirectTo="/"
+  <Route
+    path="/"
+    redirectTo="/signin"
     exact
-    component={PasswordReset}
+    component={SignIn}
   />,
+
   <Route path="/about" exact component={About} />,
   <PrivateRoute path="/home" exact component={Home} />,
   <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,

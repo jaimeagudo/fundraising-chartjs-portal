@@ -10,6 +10,8 @@ import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import { useMenu } from 'material-ui-shell/lib/providers/Menu'
+import efpApiClient from 'services/efpApiClient'
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,12 +61,18 @@ const SignIn = () => {
   const { setAuthMenuOpen } = useMenu()
   const { auth, setAuth } = useAuth()
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
-    authenticate({
-      displayName: 'User',
-      email: username,
-    })
+    const response = await efpApiClient.authenticate(username, password)
+    console.log("handleSubmit -> response", response)
+
+    if (response && response.accessToken) {
+      authenticate({
+        displayName: response.displayName,
+        email: username,
+        accessToken: response.accessToken
+      })
+    }
   }
 
   const authenticate = (user) => {
@@ -74,12 +82,7 @@ const SignIn = () => {
     let _location = history.location
 
     let _route = '/home'
-    if (_location.state && _location.state.from) {
-      _route = _location.state.from.pathname
-      history.push(_route)
-    } else {
-      history.push(_route)
-    }
+    history.push(_route)
   }
 
   return (
@@ -135,8 +138,8 @@ const SignIn = () => {
               justifyContent: 'space-between',
             }}
           >
-            <Link to="/password_reset">Forgot Password?</Link>
-            <Link to="/signup">Register</Link>
+            {/* <Link to="/password_reset">Forgot Password?</Link>
+            <Link to="/signup">Register</Link> */}
           </div>
         </div>
       </Paper>

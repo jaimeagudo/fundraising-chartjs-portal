@@ -12,7 +12,7 @@ const config = {
   routes,
   locale: {
     locales,
-    defaultLocale: parseLanguages(['en', 'de', 'ru'], 'en'),
+    defaultLocale: parseLanguages(['en', 'es'], 'en'),
     onError: (e) => {
       //console.warn(e)
 
@@ -28,9 +28,10 @@ const config = {
     defaultType: 'light',
   },
   pages: {
-    LandingPage: lazy(() => import('../pages/LandingPage/LandingPage')),
+    LandingPage: false, // lazy(() => import('../pages/LandingPage/LandingPage')),
     PageNotFound: lazy(() => import('../pages/PageNotFound/PageNotFound')),
   },
+  // LandingPage: false
 }
 
 export default config
