@@ -62,9 +62,9 @@ const getMenuItems = (props) => {
         value: '/signin',
         onClick: isAuthorised
           ? () => {
-              setAuth({ isAuthenticated: false })
-            }
-          : () => {},
+            setAuth({ isAuthenticated: false })
+          }
+          : () => { },
         visible: true,
         primaryText: isAuthorised
           ? intl.formatMessage({ id: 'sign_out' })
@@ -77,27 +77,27 @@ const getMenuItems = (props) => {
     {
       value: '/home',
       visible: isAuthorised,
-      primaryText: intl.formatMessage({ id: 'home' }),
+      primaryText: intl.formatMessage({ id: 'campaignStatus' }),
       leftIcon: <DaschboardIcon />,
     },
-    {
-      value: '/dialog_demo',
-      visible: isAuthorised,
-      primaryText: intl.formatMessage({
-        id: 'dialog_demo',
-        defaultMessage: 'Dialog demo',
-      }),
-      leftIcon: <ChatBubble />,
-    },
-    {
-      value: '/toast_demo',
-      visible: isAuthorised,
-      primaryText: intl.formatMessage({
-        id: 'toast_demo',
-        defaultMessage: 'Toast demo',
-      }),
-      leftIcon: <ChatBubble />,
-    },
+    // {
+    //   value: '/dialog_demo',
+    //   visible: isAuthorised,
+    //   primaryText: intl.formatMessage({
+    //     id: 'dialog_demo',
+    //     defaultMessage: 'Dialog demo',
+    //   }),
+    //   leftIcon: <ChatBubble />,
+    // },
+    // {
+    //   value: '/toast_demo',
+    //   visible: isAuthorised,
+    //   primaryText: intl.formatMessage({
+    //     id: 'toast_demo',
+    //     defaultMessage: 'Toast demo',
+    //   }),
+    //   leftIcon: <ChatBubble />,
+    // },
     {
       value: '/about',
       visible: true,

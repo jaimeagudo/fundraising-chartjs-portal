@@ -8,12 +8,11 @@ const HomePage = () => {
   const intl = useIntl()
 
   return (
-    <Page pageTitle={intl.formatMessage({ id: 'home' })}>
+    <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
       <Scrollbar
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
       >
-        {intl.formatMessage({ id: 'home' })}
-Support portal web for EFP
+        <h3>Home placeholder</h3>
       </Scrollbar>
     </Page>
   )

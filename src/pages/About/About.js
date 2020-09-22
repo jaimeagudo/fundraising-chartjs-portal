@@ -1,24 +1,29 @@
-import 'github-markdown-css'
-import Page from 'material-ui-shell/lib/containers/Page/Page'
-import README from './README.md'
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
-import Scrollbar from 'material-ui-shell/lib/components/Scrollbar'
+import Page from 'material-ui-shell/lib/containers/Page/Page'
 import { injectIntl } from 'react-intl'
+import logo from '../../logo.svg';
+import api from '../../config/api'
 
-const AboutPage = ({ intl }) => {
-  return (
-    <Page pageTitle={intl.formatMessage({ id: 'about' })}>
-      <Scrollbar>
-        <div style={{ backgroundColor: 'white', padding: 12 }}>
-          <ReactMarkdown
-            className="markdown-body"
-            source={README}
-            escapeHtml={true}
-          />
-        </div>
-      </Scrollbar>
-    </Page>
-  )
-}
+const AboutPage = ({ intl }) =>
+  (<Page pageTitle={intl.formatMessage({ id: 'about' })}>
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
+      <img src={logo} className="App-logo" alt="logo" />
+      <h3>Equity For Punks. Brewdog PLC (C) 2020</h3>
+      <h4>{`Pointing at `}<a href={api.server} >{api.server}</a></h4>
+
+    </div>
+  </Page>)
+
 export default injectIntl(AboutPage)
