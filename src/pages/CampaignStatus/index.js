@@ -13,44 +13,44 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
+    table: {
+        minWidth: 650,
+    },
 });
 
 
 export function CampaignStatus() {
-  const intl = useIntl()
+    const intl = useIntl()
 
-  const [status, setStatus] = useState(null);
-  const [error, setError] = useState(null);
+    const [status, setStatus] = useState(null);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    async function fetchData() {
-      // eslint-disable-next-line no-console
-      const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
-      setStatus(response);
-    }
-    fetchData();
-  }, []);
+    useEffect(() => {
+        async function fetchData() {
+            // eslint-disable-next-line no-console
+            const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
+            setStatus(response);
+        }
+        fetchData();
+    }, []);
 
-  const classes = useStyles();
+    const classes = useStyles();
 
-  return (
-    <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
-      <Helmet>
-        <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
-      </Helmet>
-      <Scrollbar
-        style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
-      >
-        <AgnosticTableMapper obj={status} classes={classes} fieldsWithPences={api.fieldsWithPences} />
-        <FormControl component="fieldset" error={!!error} className={classes.formControl}>
-          <FormHelperText>{(error && error.message) || ''}</FormHelperText>
-        </FormControl>
-      </Scrollbar>
-    </Page>
-  )
+    return (
+        <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
+            <Helmet>
+                <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
+            </Helmet>
+            <Scrollbar
+                style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
+            >
+                <AgnosticTableMapper obj={status} classes={classes} fieldsWithPences={api.fieldsWithPences} />
+                <FormControl component="fieldset" error={!!error} className={classes.formControl}>
+                    <FormHelperText>{(error && error.message) || ''}</FormHelperText>
+                </FormControl>
+            </Scrollbar>
+        </Page>
+    )
 }
 
 

@@ -29,7 +29,7 @@ const prettifyValue = (field, withPences) => {
                 return field
             }
         case 'object': return JSON.stringify(field)
-        default: return field;
+        default: return String(field);
     }
 }
 
@@ -47,7 +47,8 @@ export default ({ obj, classes, fieldsWithPences }) =>
     (<TableContainer component={Paper}>
         <Table className={classes.table} aria-label="simple table">
             <TableBody>
-                {obj && Object.keys(obj).map(key =>
+                {/*Non empty/null values are listed first */}
+                {obj && Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0).map(key =>
                     <StyledTableRow key={key}>
                         <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
                         <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key))}</TableCell>

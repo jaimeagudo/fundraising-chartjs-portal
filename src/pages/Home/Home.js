@@ -5,16 +5,16 @@ import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import { useIntl } from 'react-intl'
 
 const HomePage = () => {
-  const intl = useIntl()
+    const intl = useIntl()
 
-  return (
-    <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
-      <Scrollbar
-        style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
-      >
-        <h3>Home placeholder</h3>
-      </Scrollbar>
-    </Page>
-  )
+    return (
+        <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
+            <Scrollbar
+                style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
+            >
+                <h3>Home placeholder</h3>
+            </Scrollbar>
+        </Page>
+    )
 }
 export default HomePage
