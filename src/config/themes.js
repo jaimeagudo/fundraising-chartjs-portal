@@ -1,18 +1,14 @@
 import red from '@material-ui/core/colors/red'
-import pink from '@material-ui/core/colors/pink'
 import green from '@material-ui/core/colors/green'
+import lime from '@material-ui/core/colors/lime'
 
 const themes = [
   {
     id: 'default',
-  },
-  {
-    id: 'red',
-    color: red[500],
     source: {
       palette: {
-        primary: red,
-        secondary: pink,
+        primary: { main: '#00AFDB' },
+        secondary: lime,
         error: red,
       },
     },

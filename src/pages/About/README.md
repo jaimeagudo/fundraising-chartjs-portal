@@ -9,7 +9,7 @@ I like `short` README's so here we go :sunglasses:
 
 ## Idea and concept
 
-With [Create React App](https://reactjs.org/docs/create-a-new-react-app.html) (CRA) we can start easy with a new React project but we still need to do some tricky parts to make it work. For developers who are starting with React it's not clear what to do next and for the experienced it's annoying to repeat for every project the basic setup and configuration like the routing, intl, auth and other main parts of most applications. The latest CRA versions give us the opportunity to create our own custom templates. Templates are nice but not the solution for these identified problems. We need a tool that starts out easily and gets updates over time for bugfixes and API changes of the dependencies. Sounds like a framework? I don't think that there is a need for a React framework. Everyone can make their own project and be running in short time.
+With [Create EFP Support Portal](https://reactjs.org/docs/create-a-new-react-app.html) (CRA) we can start easy with a new React project but we still need to do some tricky parts to make it work. For developers who are starting with React it's not clear what to do next and for the experienced it's annoying to repeat for every project the basic setup and configuration like the routing, intl, auth and other main parts of most applications. The latest CRA versions give us the opportunity to create our own custom templates. Templates are nice but not the solution for these identified problems. We need a tool that starts out easily and gets updates over time for bugfixes and API changes of the dependencies. Sounds like a framework? I don't think that there is a need for a React framework. Everyone can make their own project and be running in short time.
 
 This project will provide templates for new projects that can be updated during usage but won't update as frequently as most frameworks. We can start with each project using a simple CLI command. They can be configured with configs and most parts can be replaced with custom ones. To cover most use cases this project has multiple templates:
 
@@ -68,7 +68,7 @@ Here you go [DEMO](https://www.react-most-wanted.com). The DEMO is just a DEMO. 
 
 ## What is this?
 
-React Most Wanted is a React Starter Kit based on [Create React App](https://github.com/facebookincubator/create-react-app) and [Material-UI](https://material-ui.com/) that uses [Firebase](https://firebase.google.com/).
+React Most Wanted is a React Starter Kit based on [Create EFP Support Portal](https://github.com/facebookincubator/create-react-app) and [Material-UI](https://material-ui.com/) that uses [Firebase](https://firebase.google.com/).
 
 ## Why should I use it?
 

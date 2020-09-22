@@ -20,6 +20,7 @@ const messages = defineMessages({
   menu: 'Menu',
   menu_mini_mode: 'Mini menu',
   offline: 'Offline',
+  campaignStatus: 'Campaign Status'
 })
 
 export default messages
