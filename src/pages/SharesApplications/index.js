@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl, FormattedMessage } from 'react-intl'
+import { Link, useParams } from 'react-router-dom'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -15,6 +16,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 
 
 import efpApiClient from '../../services/efpApiClient';
@@ -38,23 +40,29 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
     },
-});
+    paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    }
+}));
 
 
 
 export function SharesApplications() {
     const intl = useIntl()
     const classes = useStyles();
+    const params = useParams();
 
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
-    const [email, setEmail] = useState('@yahoo');
-    const [magentoUserId, setMagentoUserId] = useState('');
-    const [paymentReference, setPaymentReference] = useState('16000732383454638');
+    const [email, setEmail] = useState(params.email || '');
+    const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
+    const [paymentReference, setPaymentReference] = useState(params.paymentReference || '');
 
     useEffect(() => {
         let ignore = false;
@@ -78,25 +86,39 @@ export function SharesApplications() {
                 <title>{intl.formatMessage({ id: 'sharesApplications' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                <form noValidate autoComplete="off">
-                    <TextField id="email" label="Email" value={email} onChange={(event) => setEmail(event.target.value || '')} />
-                    <TextField id="magentoUserId" label="Magento User Id" value={magentoUserId} onChange={(event) => setMagentoUserId(event.target.value || '')} />
-                    <TextField id="paymentReference" label="Payment Reference" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value || '')} />
-                </form>
+                <Paper className={classes.paper}>
+
+                    <form noValidate autoComplete="off">
+                        <Grid container spacing={6}>
+                            <Grid item >
+                                <TextField id="email" label="Email" value={email} onChange={(event) => setEmail(event.target.value || '')} />
+                            </Grid>
+                            <Grid item >
+                                <TextField id="magentoUserId" label="Magento User Id" value={magentoUserId} onChange={(event) => setMagentoUserId(event.target.value || '')} />
+                            </Grid>
+                            <Grid item >
+                                <TextField id="paymentReference" label="Payment Reference" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value || '')} />
+                            </Grid>
+
+                        </Grid>
+                    </form>
+                </Paper>
                 <Paper className={classes.root}>
+
                     <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="customized table">
                             <TableHead>
-                                <TableRow>
-                                    {columnNames.map(key => <StyledTableCell align="right">{key}</StyledTableCell>)}
+                                <TableRow >
+                                    {columnNames.map(key =>
+                                        <StyledTableCell key={key} align="right">{key}</StyledTableCell>)}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {result && result.map((row) => (
-                                    <StyledTableRow key={row[columnNames[0]]}>
-                                        {columnNames.map(key => <StyledTableCell align="right">
-                                             {key === 'MagentoUserId' && <a href={`/customerInformation/${row[key]}`}>{row[key]}</a>}
-                                             {key !== 'MagentoUserId' && row[key] }
+                                    <StyledTableRow key={row.ApplicationId}>
+                                        {columnNames.map((key, i) =>
+                                            <StyledTableCell align="right" key={row.ApplicationId + i}>
+                                                {key === 'MagentoUserId' ? <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link> : row[key]}
                                             </StyledTableCell>)}
                                     </StyledTableRow>
                                 ))}
