@@ -94,7 +94,10 @@ export function SharesApplications() {
                             <TableBody>
                                 {result && result.map((row) => (
                                     <StyledTableRow key={row[columnNames[0]]}>
-                                        {columnNames.map(key => <StyledTableCell align="right">{row[key]}</StyledTableCell>)}
+                                        {columnNames.map(key => <StyledTableCell align="right">
+                                             {key === 'MagentoUserId' && <a href={`/customerInformation/${row[key]}`}>{row[key]}</a>}
+                                             {key !== 'MagentoUserId' && row[key] }
+                                            </StyledTableCell>)}
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
