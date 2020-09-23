@@ -21,7 +21,8 @@ const messages = defineMessages({
     menu_mini_mode: 'Mini menu',
     offline: 'Offline',
     campaignStatus: 'Campaign Status',
-    sharesApplications: 'Shares Applications'
+    sharesApplications: 'Shares Applications',
+    customerInformation: 'Customer Information - {magentoUserId}'
 })
 
 export default messages

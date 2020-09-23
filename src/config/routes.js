@@ -10,6 +10,7 @@ const About = lazy(() => import('../pages/About/About'))
 const Home = lazy(() => import('../pages/Home/Home'))
 const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
 const SharesApplications = lazy(() => import('../pages/SharesApplications'))
+const CustomerInformation = lazy(() => import('../pages/CustomerInformation'))
 const DialogDemo = lazy(() => import('../pages/DialogDemo/DialogDemo'))
 const ToastDemo = lazy(() => import('../pages/ToastDemo/ToastDemo'))
 
@@ -28,6 +29,7 @@ const routes = [
     <PrivateRoute path="/home" exact component={CampaignStatus} />,
     <PrivateRoute path="/campaign/status" exact component={CampaignStatus} />,
     <PrivateRoute path="/sharesApplications" exact component={SharesApplications} />,
+    <PrivateRoute path="/customerInformation/:magentoUserId" exact component={CustomerInformation} />,
     // <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,
     // <PrivateRoute path="/toast_demo" exact component={ToastDemo} />,
 ]
