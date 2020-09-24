@@ -85,6 +85,12 @@ const getMenuItems = (props) => {
             primaryText: intl.formatMessage({ id: 'sharesApplications' }),
             leftIcon: <DaschboardIcon />,
         },
+        {
+            value: '/lockedAccounts',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'lockedAccounts' }),
+            leftIcon: <DaschboardIcon />,
+        },
         // {
         //   value: '/dialog_demo',
         //   visible: isAuthorised,

@@ -22,7 +22,8 @@ const messages = defineMessages({
     offline: 'Offline',
     campaignStatus: 'Campaign Status',
     sharesApplications: 'Shares Applications',
-    customerInformation: 'Customer Information - {magentoUserId}'
+    customerInformation: 'Customer Information - {magentoUserId}',
+    lockedAccounts: 'Locked Accounts'
 })
 
 export default messages
