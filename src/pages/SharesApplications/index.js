@@ -79,11 +79,10 @@ export function SharesApplications() {
         return () => { ignore = true; }
     }, [email, paymentReference, magentoUserId, requestDate]);
 
-    const onRefundClick = useCallback((applicationId) => {
-        console.log('REFNNNNN')
+    const onRefundClick = useCallback((paymentReference) => {
         async function refundClick() {
             await efpApiClient.requestEfpApi(
-                `/admin/sharesApplications/${applicationId}/refund`,
+                `/admin/sharesApplications/${paymentReference}/refund`,
                 {method: 'POST',})
                 .catch(setError);
             setRequestDate(new Date());
@@ -103,7 +102,7 @@ export function SharesApplications() {
                 variant="contained"
                 color="secondary"
                 className={classes.button}
-                onClick={() => onRefundClick(row.ApplicationId) }
+                onClick={() => onRefundClick(row.PaymentReference) }
                 startIcon={<MoneyOff />}
             >Refund
             </Button>
