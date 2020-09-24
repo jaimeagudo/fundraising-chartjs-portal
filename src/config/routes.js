@@ -11,6 +11,7 @@ const Home = lazy(() => import('../pages/Home/Home'))
 const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
 const SharesApplications = lazy(() => import('../pages/SharesApplications'))
 const CustomerInformation = lazy(() => import('../pages/CustomerInformation'))
+const LockedAccounts = lazy(() => import('../pages/LockedAccounts'))
 const DialogDemo = lazy(() => import('../pages/DialogDemo/DialogDemo'))
 const ToastDemo = lazy(() => import('../pages/ToastDemo/ToastDemo'))
 
@@ -33,6 +34,7 @@ const routes = [
     <PrivateRoute path="/sharesApplications/user/:magentoUserId" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/paymentReference/:paymentReference" exact component={SharesApplications} />,
     <PrivateRoute path="/customerInformation/:magentoUserId" exact component={CustomerInformation} />,
+    <PrivateRoute path="/lockedAccounts" exact component={LockedAccounts} />,
     // <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,
     // <PrivateRoute path="/toast_demo" exact component={ToastDemo} />,
 ]

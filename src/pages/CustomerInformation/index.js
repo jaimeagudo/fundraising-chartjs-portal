@@ -87,7 +87,8 @@ export function CustomerInformation() {
     const { magentoUserId } = useParams();
     const [error, setError] = useState(null);
     const [result, setResult] = useState(null);
-    const helper = (error && error.message) || (!result && 'No data') || ''
+    const helper = (error && error.message) || (!result && 'No data') || '';
+    const [requestDate, setRequestDate] = useState(new Date());
 
     useEffect(() => {
         console.log('Magento user id: ' + magentoUserId)
@@ -98,14 +99,16 @@ export function CustomerInformation() {
             setResult(result);
         }
         fetchData()
-    }, [magentoUserId]);
+    }, [magentoUserId, requestDate]);
 
     const onUnlockClick = useCallback(() => {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
-                `/customers/${magentoUserId}/unlock/BDIPA`)
+                `/admin/customers/${magentoUserId}/unlock/BDIPA`,
+                {method: 'PUT',})
                 .catch(setError);
             setResult(result);
+            setRequestDate(new Date());
         }
         unlockAccount()
     }, [magentoUserId])
@@ -146,6 +149,7 @@ export function CustomerInformation() {
                                 defaultValue={result.lockedAccountAt || "UNLOCKED"}
                                 variant="outlined"
                                 InputProps={{
+                                    readOnly: true,
                                     endAdornment: (result.lockedAccountAt ?
                                         <InputAdornment position='start' >
                                             <Button
