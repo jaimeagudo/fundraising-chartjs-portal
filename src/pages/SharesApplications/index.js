@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
@@ -17,6 +17,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import MoneyOff from '@material-ui/icons/MoneyOff';
 
 
 import efpApiClient from '../../services/efpApiClient';
@@ -63,6 +65,7 @@ export function SharesApplications() {
     const [email, setEmail] = useState(params.email || '');
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
     const [paymentReference, setPaymentReference] = useState(params.paymentReference || '');
+    const [requestDate, setRequestDate] = useState(new Date());
 
     useEffect(() => {
         let ignore = false;
@@ -74,11 +77,40 @@ export function SharesApplications() {
         }
         fetchData()
         return () => { ignore = true; }
-    }, [email, paymentReference, magentoUserId]);
+    }, [email, paymentReference, magentoUserId, requestDate]);
 
+    const onRefundClick = useCallback((applicationId) => {
+        console.log('REFNNNNN')
+        async function refundClick() {
+            await efpApiClient.requestEfpApi(
+                `/admin/sharesApplications/${applicationId}/refund`,
+                {method: 'POST',})
+                .catch(setError);
+            setRequestDate(new Date());
+        }
+        refundClick()
+    }, []);
 
     const columnNames = result && result.length ? Object.keys(result[0]) : []
     const helper = (error && error.message) || ((!result || !result.length) && 'No data')
+
+    const getColumnContent = (row, key) => {
+        switch  (key) {
+            case 'MagentoUserId':
+                return <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
+            case 'RefundedAt':
+                return row.RefundedAt ? row.RefundedAt :   <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={() => onRefundClick(row.ApplicationId) }
+                startIcon={<MoneyOff />}
+            >Refund
+            </Button>
+            default:
+                return row[key];
+        }
+    }
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'sharesApplications' })}>
@@ -118,7 +150,7 @@ export function SharesApplications() {
                                     <StyledTableRow key={row.ApplicationId}>
                                         {columnNames.map((key, i) =>
                                             <StyledTableCell align="right" key={row.ApplicationId + i}>
-                                                {key === 'MagentoUserId' ? <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link> : row[key]}
+                                                {getColumnContent(row, key)}
                                             </StyledTableCell>)}
                                     </StyledTableRow>
                                 ))}
