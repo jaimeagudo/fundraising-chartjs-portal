@@ -22,7 +22,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-
+import MoneyOff from '@material-ui/icons/MoneyOff';
 
 import efpApiClient from '../../services/efpApiClient';
 
@@ -101,6 +101,18 @@ export function CustomerInformation() {
         fetchData()
     }, [magentoUserId, requestDate]);
 
+    const onRefundClick = useCallback((paymentReference) => {
+        console.log(paymentReference)
+        async function refundClick() {
+            await efpApiClient.requestEfpApi(
+                `/admin/sharesApplications/${paymentReference}/refund`,
+                {method: 'POST',})
+                .catch(setError);
+            setRequestDate(new Date());
+        }
+        refundClick()
+    }, []);
+
     const onUnlockClick = useCallback(() => {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
@@ -113,15 +125,56 @@ export function CustomerInformation() {
         unlockAccount()
     }, [magentoUserId])
 
+    const getColumnContent = (row, key) => {
+        switch  (key) {
+            case 'BuyerMagentoUserId':
+                return <Link to={`/customerInformation/${row.BuyerMagentoUserId}`}>{row.BuyerMagentoUserId}</Link>;
+            case 'RedeemUserId':
+                return <Link to={`/customerInformation/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
+            case 'RefundDate':
+                return row.RefundDate ? row.RefundDate :   <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={() => onRefundClick(row.Code) }
+                startIcon={<MoneyOff />}
+            >Refund
+            </Button>
+            default:
+                return row[key];
+        }
+    }
+
+    const tableRenderer = (columnNames, rows, title, classes) => {
+        return (
+            <div>
+                <h2>{title}</h2>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table} aria-label="customized table">
+                        <TableHead>
+                            <TableRow>
+                                {columnNames.map(key => <StyledTableCell align="right">{key}</StyledTableCell>)}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.length ? rows.map((row) => (
+                                <StyledTableRow key={row[columnNames[0]]}>
+                                    {columnNames.map(key => <StyledTableCell align="right">
+                                        {getColumnContent(row, key)}
+                                    </StyledTableCell>)}
+                                </StyledTableRow>
+                            )) : <FormHelperText>No data</FormHelperText>}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </div>)
+    }
+
     const purchasedVouchersColumnNames = result && result.purchasedVouchers && result.purchasedVouchers.length ? Object.keys(result.purchasedVouchers[0]) : [];
     const shareRewardColumnNames = result && result.claimedShareRewards && result.claimedShareRewards.length ? Object.keys(result.claimedShareRewards[0]) : [];
     const referralRewardColumnNames = result && result.claimedReferralRewards && result.claimedReferralRewards.length ? Object.keys(result.claimedReferralRewards[0]) : [];
     const leagueEventsColumnNames = result && result.referralLeagueEvents && result.referralLeagueEvents.length ? Object.keys(result.referralLeagueEvents[0]) : [];
     const discountCardsColumnNames = result && result.discountCards && result.discountCards.length ? Object.keys(result.discountCards[0]) : [];
-    // if (result) {
-    //     result.lockedAccountAt = new Date()
-    // }
-
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })}>
