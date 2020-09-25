@@ -1,15 +1,33 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { Line, Bar, Doughnut } from 'react-chartjs-2'
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import efpApiClient from '../../services/efpApiClient';
 import AgnosticTableMapper from 'components/AgnosticTableMapper'
 import api from '../../config/api'
 
 import { useIntl, FormattedMessage } from 'react-intl'
+import { rainbow, capitalize, pretiffyKey, rndColors, fixedColors } from '../../utils'
+
+
+const renderPie = (array, labelKey, dataKey) => {
+
+    const pieData = array && array.length ? {
+        labels: array.map(r => r[labelKey]),
+        datasets: [{
+            data: array.map(r => r[dataKey]),
+            backgroundColor: fixedColors(array.length),
+            // hoverBackgroundColor: rainbow(array.length)
+        }]
+    } : {}
+
+    return pieData ? <Doughnut data={pieData} /> : <CircularProgress />
+}
 
 
 const useStyles = makeStyles({
@@ -17,11 +35,7 @@ const useStyles = makeStyles({
         minWidth: 650,
     },
 });
-const capitalize = (word) => word.charAt(0).toUpperCase() + word.substring(1);
-function pretiffyKey(name) {
-    const words = name.match(/[A-Za-z][a-z]*/g) || [];
-    return words.map(capitalize).join(" ");
-}
+
 
 export function CampaignStatus() {
     const intl = useIntl()
@@ -41,6 +55,7 @@ export function CampaignStatus() {
 
     const classes = useStyles();
 
+
     return (
         <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
             <Helmet>
@@ -56,6 +71,12 @@ export function CampaignStatus() {
                     </div>
                 )}
 
+                <h2>{pretiffyKey('totalRaisedShares byCountry')} </h2>
+                {renderPie(status ? status.byCountry : [], 'Country', 'totalRaisedShares')}
+
+                <h2>{pretiffyKey('uniqueInvestors byCountry')} </h2>
+                {renderPie(status ? status.byCountry : [], 'Country', 'uniqueInvestors')}
+
 
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
@@ -64,7 +85,6 @@ export function CampaignStatus() {
         </Page>
     )
 }
-
 
 export default memo(CampaignStatus);
 
