@@ -8,11 +8,11 @@ import Page from 'material-ui-shell/lib/containers/Page/Page'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import efpApiClient from '../../services/efpApiClient';
-import AgnosticTableMapper from 'components/AgnosticTableMapper'
+import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 import api from '../../config/api'
 
 import { useIntl, FormattedMessage } from 'react-intl'
-import { rainbow, capitalize, pretiffyKey, rndColors, fixedColors } from '../../utils'
+import { pretiffyKey, fixedColors } from '../../utils'
 
 
 const renderPie = (array, labelKey, dataKey) => {
@@ -55,29 +55,21 @@ export function CampaignStatus() {
 
     const classes = useStyles();
 
+    const renderObj = (obj) => obj ? Object.keys(obj).map((key, index) =>
+        Array.isArray(obj[key]) ? ArrayRenderer(Object.keys(obj[key][0]), obj[key], pretiffyKey(key), classes) :
+            <div key={key + index} >
+                <h1>{pretiffyKey(key)}</h1>
+                <ObjectRenderer name={key} obj={obj[key]} classes={classes} fieldsWithPences={api.fieldsWithPences} />
+            </div >)
+        : null;
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
             <Helmet>
                 <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
             </Helmet>
-            <Scrollbar
-                style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
-            >
-                {status && Object.keys(status).map((key, index) =>
-                    <div id={key} >
-                        <h1>{pretiffyKey(key)}</h1>
-                        <AgnosticTableMapper obj={status[key]} classes={classes} fieldsWithPences={api.fieldsWithPences} />
-                    </div>
-                )}
-
-                <h2>{pretiffyKey('totalRaisedShares byCountry')} </h2>
-                {renderPie(status ? status.byCountry : [], 'Country', 'totalRaisedShares')}
-
-                <h2>{pretiffyKey('uniqueInvestors byCountry')} </h2>
-                {renderPie(status ? status.byCountry : [], 'Country', 'uniqueInvestors')}
-
-
+            <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
+                {renderObj(status)}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
                 </FormControl>
@@ -89,3 +81,10 @@ export function CampaignStatus() {
 export default memo(CampaignStatus);
 
 
+
+
+                // <h2>{pretiffyKey('totalRaisedShares byCountry')} </h2>
+                // {renderPie(status ? status.byCountry : [], 'Country', 'totalRaisedShares')}
+
+                // <h2>{pretiffyKey('uniqueInvestors byCountry')} </h2>
+                // {renderPie(status ? status.byCountry : [], 'Country', 'uniqueInvestors')}

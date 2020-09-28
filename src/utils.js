@@ -4,7 +4,7 @@ const DATE_FORMAT_STRING = 'yyyy-MM-dd'
 
 const capitalize = (word) => word.charAt(0).toUpperCase() + word.substring(1);
 function pretiffyKey(name) {
-    const words = name.match(/[A-Za-z][a-z]*/g) || [];
+    const words = name.match(/[A-Za-z0-9][a-z]*/g) || [];
     return words.map(capitalize).join(" ");
 }
 
