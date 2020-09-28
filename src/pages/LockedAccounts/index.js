@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
+import { Link } from 'react-router-dom';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -66,7 +67,7 @@ export function LockedAccounts() {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
                 `/admin/customers/${magentoUserId}/unlock/BDIPA`,
-                {method: 'PUT',})
+                { method: 'PUT', })
                 .catch(setError);
             setResult(result);
             setRequestDate(new Date());
@@ -78,7 +79,7 @@ export function LockedAccounts() {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
                 `/admin/customers/all/unlock`,
-                {method: 'PUT',})
+                { method: 'PUT', })
                 .catch(setError);
             setResult(result);
             setRequestDate(new Date());
@@ -88,6 +89,23 @@ export function LockedAccounts() {
 
     const lockedAccountsColumnNames = result && result && result.length ? [...Object.keys(result[0]), 'Action'] : [];
 
+
+
+
+    const cellMapper = (key, row, classes) => {
+        switch (key) {
+            case 'magentoUserId': return (<Link to={`/customerInformation/${row.magentoUserId}`}>{row.magentoUserId}</Link>)
+            case 'Action': return (<Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={() => onUnlockClick(row['magentoUserId'])}
+                startIcon={<LockOpenIcon />}
+            >Unlock  </Button>)
+            default: return row[key]
+        }
+
+    }
     const lockedAccountsTableRenderer = (columnNames, rows, title, classes) => {
         return (
             <div>
@@ -97,7 +115,7 @@ export function LockedAccounts() {
                         variant="contained"
                         color="secondary"
                         className={classes.button}
-                        style={ {float: 'right'} }
+                        style={{ float: 'right' }}
                         onClick={onUnlockAllClick}
                         startIcon={<LockOpenIcon />}
                     >Unlock All
@@ -113,23 +131,16 @@ export function LockedAccounts() {
                         <TableBody>
                             {rows.length ? rows.map((row) => (
                                 <StyledTableRow key={row[columnNames[0]]}>
-                                    {columnNames.map(key => <StyledTableCell align="right">
-                                        {key !== 'Action' && row[key]}
-                                        {key === 'Action' && <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    className={classes.button}
-                                                    onClick={() => onUnlockClick(row['magentoUserId'])}
-                                                    startIcon={<LockOpenIcon />}
-                                                >Unlock
-                                                </Button>}
-                                    </StyledTableCell>)}
+                                    {columnNames.map(key =>
+                                        <StyledTableCell align="right">
+                                            {cellMapper(key, row, classes)}
+                                        </StyledTableCell>)}
                                 </StyledTableRow>
                             )) : <FormHelperText>No data</FormHelperText>}
                         </TableBody>
                     </Table>
-                </TableContainer>
-            </div>)
+                </TableContainer >
+            </div >)
     }
 
     return (
@@ -138,7 +149,7 @@ export function LockedAccounts() {
                 <title>{intl.formatMessage({ id: 'lockedAccounts' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {lockedAccountsTableRenderer(lockedAccountsColumnNames, (result ) || [], 'Locked Accounts', classes)}
+                {lockedAccountsTableRenderer(lockedAccountsColumnNames, (result) || [], 'Locked Accounts', classes)}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>
