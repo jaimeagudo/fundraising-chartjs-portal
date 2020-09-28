@@ -71,8 +71,10 @@ const SignIn = () => {
     const onSubmit = useCallback((event) => {
 
         async function handleSubmit() {
-            const response = await efpApiClient.authenticate(username, password).catch(e =>
-                enqueueSnackbar(e.status === 401 ? 'Unauthorized' : e.status, snackBarErrorOptions)
+            const response = await efpApiClient.authenticate(username, password).catch(e => {
+                console.error(e)
+                enqueueSnackbar(e.status === 401 ? 'Unauthorized' : e.message, snackBarErrorOptions)
+            }
             )
 
             if (response && response.accessToken) {
