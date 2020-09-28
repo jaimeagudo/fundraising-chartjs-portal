@@ -17,7 +17,11 @@ const useStyles = makeStyles({
         minWidth: 650,
     },
 });
-
+const capitalize = (word) => word.charAt(0).toUpperCase() + word.substring(1);
+function pretiffyKey(name) {
+    const words = name.match(/[A-Za-z][a-z]*/g) || [];
+    return words.map(capitalize).join(" ");
+}
 
 export function CampaignStatus() {
     const intl = useIntl()
@@ -28,7 +32,8 @@ export function CampaignStatus() {
     useEffect(() => {
         async function fetchData() {
             // eslint-disable-next-line no-console
-            const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
+            // const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
+            const response = await efpApiClient.requestEfpApi('/admin/campaign/stats/BDIPA').catch(setError);
             setStatus(response);
         }
         fetchData();
@@ -44,7 +49,14 @@ export function CampaignStatus() {
             <Scrollbar
                 style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
             >
-                <AgnosticTableMapper obj={status} classes={classes} fieldsWithPences={api.fieldsWithPences} />
+                {status && Object.keys(status).map((key, index) =>
+                    <div>
+                        <h1>{pretiffyKey(key)}</h1>
+                        <AgnosticTableMapper obj={status[key]} classes={classes} fieldsWithPences={api.fieldsWithPences} />
+                    </div>
+                )}
+
+
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
                 </FormControl>

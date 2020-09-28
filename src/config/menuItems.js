@@ -1,14 +1,14 @@
 import allLocales from './locales'
 // import allThemes from './themes'
 import React from 'react'
-import DaschboardIcon from '@material-ui/icons/Dashboard'
+import PollIcon from '@material-ui/icons/Poll'
 import InfoOutlined from '@material-ui/icons/InfoOutlined'
 import LockIcon from '@material-ui/icons/Lock'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import LanguageIcon from '@material-ui/icons/Language'
 import SettingsIcon from '@material-ui/icons/SettingsApplications'
 import MenuOpenIcon from '@material-ui/icons/MenuOpen'
-import ChatBubble from '@material-ui/icons/ChatBubble'
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
@@ -78,18 +78,18 @@ const getMenuItems = (props) => {
             value: '/home',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'campaignStatus' }),
-            leftIcon: <DaschboardIcon />,
+            leftIcon: <PollIcon />,
         }, {
             value: '/sharesApplications',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'sharesApplications' }),
-            leftIcon: <DaschboardIcon />,
+            leftIcon: <FindInPageIcon />,
         },
         {
             value: '/lockedAccounts',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'lockedAccounts' }),
-            leftIcon: <DaschboardIcon />,
+            leftIcon: <LockIcon />,
         },
         // {
         //   value: '/dialog_demo',
