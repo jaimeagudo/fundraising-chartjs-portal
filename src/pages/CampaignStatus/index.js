@@ -50,7 +50,7 @@ export function CampaignStatus() {
                 style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
             >
                 {status && Object.keys(status).map((key, index) =>
-                    <div>
+                    <div id={key} >
                         <h1>{pretiffyKey(key)}</h1>
                         <AgnosticTableMapper obj={status[key]} classes={classes} fieldsWithPences={api.fieldsWithPences} />
                     </div>

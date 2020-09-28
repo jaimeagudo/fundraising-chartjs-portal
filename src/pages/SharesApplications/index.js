@@ -83,7 +83,7 @@ export function SharesApplications() {
         async function refundClick() {
             await efpApiClient.requestEfpApi(
                 `/admin/sharesApplications/${paymentReference}/refund`,
-                {method: 'POST',})
+                { method: 'POST', })
                 .catch(setError);
             setRequestDate(new Date());
         }
@@ -94,20 +94,21 @@ export function SharesApplications() {
     const helper = (error && error.message) || ((!result || !result.length) && 'No data')
 
     const getColumnContent = (row, key) => {
-        switch  (key) {
+        switch (key) {
             case 'MagentoUserId':
                 return <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
             case 'RefundedAt':
-                return row.RefundedAt ? row.RefundedAt :   <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={() => onRefundClick(row.PaymentReference) }
-                startIcon={<MoneyOff />}
-            >Refund
-            </Button>
+                return row.RefundedAt ||
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        onClick={() => onRefundClick(row.PaymentReference)}
+                        startIcon={<MoneyOff />}>
+                        Refund
+                    </Button>
             default:
-                return row[key];
+                return String(row[key]);
         }
     }
 
@@ -135,7 +136,6 @@ export function SharesApplications() {
                     </form>
                 </Paper>
                 <Paper className={classes.root}>
-
                     <TableContainer component={Paper}>
                         <Table className={classes.table} aria-label="customized table">
                             <TableHead>
