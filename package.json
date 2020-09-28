@@ -81,7 +81,7 @@
     "clean": "rm -rf ./build/",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js",
-    "deploy": "aws s3 sync ./build/ s3://support.efp.betadog.io --exclude .DS_Store --delete --profile brewdog"
+    "deploy": "npm run build && aws s3 sync ./build/ s3://support.efp.betadog.io --exclude .DS_Store --delete --profile brewdog"
   },
   "eslintConfig": {
     "extends": "react-app"
