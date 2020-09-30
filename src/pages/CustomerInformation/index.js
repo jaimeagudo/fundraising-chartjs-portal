@@ -20,11 +20,11 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 
 import efpApiClient from '../../services/efpApiClient';
+import { ArrayRenderer } from 'components/Generic'
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -52,35 +52,6 @@ const useStyles = makeStyles({
 });
 
 
-
-
-const tableRenderer = (columnNames, rows, title, classes) => {
-
-    return (
-        <div>
-            <h2>{title}</h2>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            {columnNames.map(key => <StyledTableCell align="right">{key}</StyledTableCell>)}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.length ? rows.map((row) => (
-                            <StyledTableRow key={row[columnNames[0]]}>
-                                {columnNames.map(key => <StyledTableCell align="right">
-                                    {row[key]}
-                                </StyledTableCell>)}
-                            </StyledTableRow>
-                        )) : <FormHelperText>No data</FormHelperText>}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>)
-}
-
-
 export function CustomerInformation() {
     const intl = useIntl()
     const classes = useStyles();
@@ -106,7 +77,7 @@ export function CustomerInformation() {
         async function refundClick() {
             await efpApiClient.requestEfpApi(
                 `/admin/sharesApplications/${paymentReference}/refund`,
-                {method: 'POST',})
+                { method: 'POST', })
                 .catch(setError);
             setRequestDate(new Date());
         }
@@ -117,7 +88,7 @@ export function CustomerInformation() {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
                 `/admin/customers/${magentoUserId}/unlock/BDIPA`,
-                {method: 'PUT',})
+                { method: 'PUT', })
                 .catch(setError);
             setResult(result);
             setRequestDate(new Date());
@@ -126,19 +97,19 @@ export function CustomerInformation() {
     }, [magentoUserId])
 
     const getColumnContent = (row, key) => {
-        switch  (key) {
+        switch (key) {
             case 'BuyerMagentoUserId':
                 return <Link to={`/customerInformation/${row.BuyerMagentoUserId}`}>{row.BuyerMagentoUserId}</Link>;
             case 'RedeemUserId':
                 return <Link to={`/customerInformation/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
             case 'RefundDate':
-                return row.RefundDate ? row.RefundDate :   <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                onClick={() => onRefundClick(row.Code) }
-                startIcon={<MoneyOff />}
-            >Refund
+                return row.RefundDate ? row.RefundDate : <Button
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={() => onRefundClick(row.Code)}
+                    startIcon={<MoneyOff />}
+                >Refund
             </Button>
             default:
                 return row[key];

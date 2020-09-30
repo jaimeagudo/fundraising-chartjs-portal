@@ -5,8 +5,7 @@ const STAGING_SERVER = "https://staging.efp.betadog.io/api"
 const PROD_SERVER = "https://prod.efp.betadog.io/api"
 
 const api = {
-    server: process.env.NODE_ENV === 'development' ? LOCAL_SERVER : STAGING_SERVER,
-    // server: STAGING_SERVER,
+    server: process.env.NODE_ENV === 'development' ? STAGING_SERVER : PROD_SERVER,
     fieldsWithPences: ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences']
 }
 

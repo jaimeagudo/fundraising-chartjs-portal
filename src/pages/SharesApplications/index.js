@@ -129,7 +129,7 @@ export function SharesApplications() {
                                 <TextField id="magentoUserId" label="Magento User Id" value={magentoUserId} onChange={(event) => setMagentoUserId(event.target.value || '')} />
                             </Grid>
                             <Grid item >
-                                <TextField id="paymentReference" label="Payment Reference" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value || '')} />
+                                <TextField id="paymentReference" label="Payment Ref | Voucher Code" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value || '')} />
                             </Grid>
 
                         </Grid>
