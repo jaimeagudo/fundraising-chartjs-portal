@@ -23,7 +23,17 @@ const messages = defineMessages({
     campaignStatus: 'Campaign Status',
     sharesApplications: 'Shares Applications',
     customerInformation: 'Customer Information - {magentoUserId}',
-    lockedAccounts: 'Locked Accounts'
+    lockedAccounts: 'Locked Accounts',
+    investorsRewards: 'Investors rewards',
+    sharesRewards: 'Shares rewards',
+    referralsRewards: 'Referrals rewards',
+    topUpStock: 'Top up stock',
+    amountToTopUp: 'Amount to Top up',
+    topUpSuccess: 'Benefit topped up succesfully',
+    topUp: 'Top up',
+    cancel: 'Cancel',
+    noDate: 'No data',
+
 })
 
 export default messages

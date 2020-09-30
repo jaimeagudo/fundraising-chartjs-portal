@@ -30,7 +30,11 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const ArrayRenderer = (columnNames, rows, title, classes) => (
+
+const defaultCellMapper = (row, key, classes) => row[key]
+
+
+const ArrayRenderer = (columnNames, rows, title, classes, cellMapper = defaultCellMapper) => (
     <div key={title}>
         <h2>{title}</h2>
         <TableContainer component={Paper}>
@@ -45,13 +49,14 @@ const ArrayRenderer = (columnNames, rows, title, classes) => (
                         <StyledTableRow key={i}>
                             {columnNames.map((columnName, k) =>
                                 <StyledTableCell key={k} align="right">
-                                    {row[columnName]}
+                                    {cellMapper(row, columnName, classes)}
                                 </StyledTableCell>)}
                         </StyledTableRow>
-                    )) : <FormHelperText>No data</FormHelperText>}
+                    )) : null}
                 </TableBody>
             </Table>
         </TableContainer>
+        {!rows.length && <FormHelperText>No data</FormHelperText>}
     </div>)
 
 

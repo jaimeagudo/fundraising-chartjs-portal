@@ -9,6 +9,7 @@ import LanguageIcon from '@material-ui/icons/Language'
 import SettingsIcon from '@material-ui/icons/SettingsApplications'
 import MenuOpenIcon from '@material-ui/icons/MenuOpen'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
+import RedeemIcon from '@material-ui/icons/Redeem';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
@@ -90,6 +91,11 @@ const getMenuItems = (props) => {
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'lockedAccounts' }),
             leftIcon: <LockIcon />,
+        }, {
+            value: '/rewards',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'investorsRewards' }),
+            leftIcon: <RedeemIcon />,
         },
         // {
         //   value: '/dialog_demo',
