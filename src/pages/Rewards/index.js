@@ -110,8 +110,17 @@ export function Benefits() {
                 <title>{intl.formatMessage({ id: 'investorsRewards' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {sharesRewards && ArrayRenderer(sharesRewardsColumns, sharesRewards, intl.formatMessage({ id: 'sharesRewards' }), classes, cellMapper)}
-                {referralRewards && ArrayRenderer(referralRewardsColumns, referralRewards, intl.formatMessage({ id: 'referralsRewards' }), classes, cellMapper)}
+                {sharesRewards && <ArrayRenderer
+                    columnNames={sharesRewardsColumns}
+                    rows={sharesRewards}
+                    title={intl.formatMessage({ id: 'sharesRewards' })}
+                    classes={classes}
+                    cellMapper={cellMapper} />}
+                {referralRewards && <ArrayRenderer
+                    columnNames={referralRewardsColumns}
+                    rows={referralRewards}
+                    title={intl.formatMessage({ id: 'referralsRewards' })}
+                    classes={classes} cellMapper={cellMapper} />}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>

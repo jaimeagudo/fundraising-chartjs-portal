@@ -24,8 +24,6 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 
 import efpApiClient from '../../services/efpApiClient';
-import { ArrayRenderer } from 'components/Generic'
-
 
 const StyledTableCell = withStyles((theme) => ({
     head: {

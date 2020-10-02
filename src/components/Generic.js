@@ -36,7 +36,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 const defaultCellMapper = (row, key, classes) => row[key]
 
-const ArrayRenderer = (columnNames, rows, title, classes, cellMapper = defaultCellMapper) => {
+const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = defaultCellMapper }) => {
     const { enqueueSnackbar } = useSnackbar()
     return (
         <div key={title}>
@@ -71,19 +71,34 @@ const ArrayRenderer = (columnNames, rows, title, classes, cellMapper = defaultCe
 }
 
 
-const ObjectRenderer = ({ obj, classes, fieldsWithPences, name }) =>
-    (<TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-            <TableBody>
-                {/*Non empty/null values are listed first */}
-                {obj && Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0).map((key, i) =>
-                    <StyledTableRow key={name + key + i}>
-                        <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
-                        <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key))}</TableCell>
-                    </StyledTableRow>
-                )}
-            </TableBody>
-        </Table>
-    </TableContainer>)
+const ObjectRenderer = ({ obj, classes, fieldsWithPences, name }) => {
+    const { enqueueSnackbar } = useSnackbar()
 
+    if (!obj) {
+        return null
+    }
+
+    /*Non empty/null values are listed first */
+    const fields = Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0)
+    const title = pretiffyKey(name)
+    return (<div key={name} >
+        <h2>{title}</h2>
+        {<CopyToClipboard text={new Parser({ fields }).parse(obj)}
+            onCopy={() => enqueueSnackbar(`${title} copied`, { variant: 'success' })} >
+            <Button color="primary" startIcon={<CopyIcon />}>Copy to clipboard</Button>
+        </CopyToClipboard>}
+        <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+                <TableBody>
+                    {fields.map((key, i) =>
+                        <StyledTableRow key={name + key + i}>
+                            <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
+                            <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key))}</TableCell>
+                        </StyledTableRow>
+                    )}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </div>)
+}
 export { ObjectRenderer, ArrayRenderer }

@@ -55,13 +55,12 @@ export function CampaignStatus() {
 
     const classes = useStyles();
 
-    const renderObj = (obj) => obj ? Object.keys(obj).map((key, index) =>
-        Array.isArray(obj[key]) && obj[key].length ? ArrayRenderer(Object.keys(obj[key][0]), obj[key], pretiffyKey(key), classes) :
-            <div key={key + index} >
-                <h2>{pretiffyKey(key)}</h2>
-                <ObjectRenderer name={key} obj={obj[key]} classes={classes} fieldsWithPences={api.fieldsWithPences} />
-            </div >)
-        : null;
+    const renderObj = (obj) => Object.keys(obj).map((key, index) =>
+        Array.isArray(obj[key]) && obj[key].length ?
+            <ArrayRenderer columnNames={Object.keys(obj[key][0])} rows={obj[key]} title={pretiffyKey(key)} classes={classes} /> :
+            <ObjectRenderer name={key} obj={obj[key]} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+    )
+
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>
@@ -69,7 +68,7 @@ export function CampaignStatus() {
                 <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {renderObj(status)}
+                {status ? renderObj(status) : null}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
                 </FormControl>
