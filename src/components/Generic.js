@@ -1,4 +1,8 @@
 import React from 'react';
+import { Parser } from 'json2csv';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { pretiffyKey, prettifyValue } from '../utils'
+
 import { withStyles } from '@material-ui/core/styles';
 
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -9,9 +13,9 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-
-import { pretiffyKey, prettifyValue } from '../utils'
-
+import Button from '@material-ui/core/Button';
+import CopyIcon from '@material-ui/icons/GetApp';
+import { useSnackbar } from 'notistack'
 const StyledTableCell = withStyles((theme) => ({
     head: {
         backgroundColor: theme.palette.common.black,
@@ -30,34 +34,41 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-
 const defaultCellMapper = (row, key, classes) => row[key]
 
+const ArrayRenderer = (columnNames, rows, title, classes, cellMapper = defaultCellMapper) => {
+    const { enqueueSnackbar } = useSnackbar()
+    return (
+        <div key={title}>
+            <h2>{title}</h2>
+            {rows.length &&
+                <CopyToClipboard text={new Parser().parse(rows)}
+                    onCopy={() => enqueueSnackbar(`${title} copied`, { variant: 'success' })} >
+                    <Button color="primary" startIcon={<CopyIcon />}>Copy to clipboard</Button>
+                </CopyToClipboard>}
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            {columnNames.map((key, j) => <StyledTableCell key={title + key + j} align="right">{key}</StyledTableCell>)}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.length ? rows.map((row, i) => (
+                            <StyledTableRow key={i}>
+                                {columnNames.map((columnName, k) =>
+                                    <StyledTableCell key={k} align="right">
+                                        {cellMapper(row, columnName, classes)}
+                                    </StyledTableCell>)}
+                            </StyledTableRow>
+                        )) : null}
+                    </TableBody>
+                </Table>
+            </TableContainer>
 
-const ArrayRenderer = (columnNames, rows, title, classes, cellMapper = defaultCellMapper) => (
-    <div key={title}>
-        <h2>{title}</h2>
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="customized table">
-                <TableHead>
-                    <TableRow>
-                        {columnNames.map((key, j) => <StyledTableCell key={title + key + j} align="right">{key}</StyledTableCell>)}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.length ? rows.map((row, i) => (
-                        <StyledTableRow key={i}>
-                            {columnNames.map((columnName, k) =>
-                                <StyledTableCell key={k} align="right">
-                                    {cellMapper(row, columnName, classes)}
-                                </StyledTableCell>)}
-                        </StyledTableRow>
-                    )) : null}
-                </TableBody>
-            </Table>
-        </TableContainer>
-        {!rows.length && <FormHelperText>No data</FormHelperText>}
-    </div>)
+            { !rows.length && <FormHelperText>No data</FormHelperText>}
+        </div >)
+}
 
 
 const ObjectRenderer = ({ obj, classes, fieldsWithPences, name }) =>
