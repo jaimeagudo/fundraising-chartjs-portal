@@ -2,45 +2,18 @@ import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
+import { ArrayRenderer } from 'components/Generic'
+import efpApiClient from '../../services/efpApiClient';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 
-
-import efpApiClient from '../../services/efpApiClient';
-
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -52,8 +25,6 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.text.secondary,
     }
 }));
-
-
 
 export function SharesApplications() {
     const intl = useIntl()
@@ -91,9 +62,8 @@ export function SharesApplications() {
     }, []);
 
     const columnNames = result && result.length ? Object.keys(result[0]) : []
-    const helper = (error && error.message) || ((!result || !result.length) && 'No data')
 
-    const getColumnContent = (row, key) => {
+    const getColumnContent = (row, key, classes) => {
         switch (key) {
             case 'MagentoUserId':
                 return <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
@@ -119,46 +89,45 @@ export function SharesApplications() {
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <Paper className={classes.paper}>
-
+                    <h1>Search</h1>
                     <form noValidate autoComplete="off">
                         <Grid container spacing={6}>
                             <Grid item >
-                                <TextField id="email" label="Email" value={email} onChange={(event) => setEmail(event.target.value || '')} />
+                                <TextField id="email"
+                                    label='Email address'
+                                    placeholder="gmail"
+                                    helperText="Partial substrings work too"
+                                    value={email}
+                                    onChange={(event) => setEmail(event.target.value || '')} />
                             </Grid>
                             <Grid item >
-                                <TextField id="magentoUserId" label="Magento User Id" value={magentoUserId} onChange={(event) => setMagentoUserId(event.target.value || '')} />
+                                <TextField id="magentoUserId"
+                                    placeholder="123456"
+                                    label="Magento User Id"
+                                    helperText="Magento User Id"
+                                    value={magentoUserId}
+                                    onChange={(event) => setMagentoUserId(event.target.value || '')} />
                             </Grid>
                             <Grid item >
-                                <TextField id="paymentReference" label="Payment Ref | Voucher Code" value={paymentReference} onChange={(event) => setPaymentReference(event.target.value || '')} />
+                                <TextField id="paymentReference"
+                                    placeholder="Ax1Gd424bc"
+                                    label="Pay Ref | Gift Code"
+                                    helperText="Payment Ref or Voucher Code"
+                                    value={paymentReference}
+                                    onChange={(event) => setPaymentReference(event.target.value || '')} />
                             </Grid>
 
                         </Grid>
                     </form>
                 </Paper>
                 <Paper className={classes.root}>
-                    <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="customized table">
-                            <TableHead>
-                                <TableRow >
-                                    {columnNames.map(key =>
-                                        <StyledTableCell key={key} align="right">{key}</StyledTableCell>)}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {result && result.map((row) => (
-                                    <StyledTableRow key={row.ApplicationId}>
-                                        {columnNames.map((key, i) =>
-                                            <StyledTableCell align="right" key={row.ApplicationId + i}>
-                                                {getColumnContent(row, key)}
-                                            </StyledTableCell>)}
-                                    </StyledTableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                    <FormControl component="fieldset" error={!!error} className={classes.formControl}>
-                        <FormHelperText>{helper}</FormHelperText>
-                    </FormControl>
+                    <ArrayRenderer
+                        title={intl.formatMessage({ id: 'sharesApplications' })}
+                        rows={result}
+                        columnNames={columnNames}
+                        classes={classes}
+                        error={error && error.message}
+                        cellMapper={getColumnContent} />
                 </Paper>
             </Scrollbar>
         </Page >

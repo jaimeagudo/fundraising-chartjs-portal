@@ -1,26 +1,19 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
-import { Link } from 'react-router-dom';
+
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import Table from '@material-ui/core/Table';
 import TextField from '@material-ui/core/TextField';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import LockOpenIcon from '@material-ui/icons/LockOpen';
-import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
+import { ArrayRenderer } from 'components/Generic'
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -28,24 +21,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import efpApiClient from '../../services/efpApiClient';
 import { useSnackbar } from 'notistack'
-
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
 
 const useStyles = makeStyles({
     table: {
@@ -59,7 +34,6 @@ export function Benefits() {
     const intl = useIntl()
     const classes = useStyles();
     const [error, setError] = useState(null);
-    const [result, setResult] = useState(null);
     const [sharesRewards, setSharesRewards] = useState([]);
     const [referralRewards, setReferralRewards] = useState([]);
     const [selectedRewardId, selectRewardId] = React.useState(NONE);
@@ -136,8 +110,17 @@ export function Benefits() {
                 <title>{intl.formatMessage({ id: 'investorsRewards' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {sharesRewards && ArrayRenderer(sharesRewardsColumns, sharesRewards, intl.formatMessage({ id: 'sharesRewards' }), classes, cellMapper)}
-                {referralRewards && ArrayRenderer(referralRewardsColumns, referralRewards, intl.formatMessage({ id: 'referralsRewards' }), classes, cellMapper)}
+                {sharesRewards && <ArrayRenderer
+                    columnNames={sharesRewardsColumns}
+                    rows={sharesRewards}
+                    title={intl.formatMessage({ id: 'sharesRewards' })}
+                    classes={classes}
+                    cellMapper={cellMapper} />}
+                {referralRewards && <ArrayRenderer
+                    columnNames={referralRewardsColumns}
+                    rows={referralRewards}
+                    title={intl.formatMessage({ id: 'referralsRewards' })}
+                    classes={classes} cellMapper={cellMapper} />}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>

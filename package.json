@@ -1,6 +1,6 @@
 {
   "name": "efp-support-web",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.9.0",
@@ -42,6 +42,7 @@
     "jest-environment-jsdom-fourteen": "1.0.1",
     "jest-resolve": "24.9.0",
     "jest-watch-typeahead": "0.4.2",
+    "json2csv": "^5.0.3",
     "material-ui-shell": "1.x",
     "mini-css-extract-plugin": "0.9.0",
     "notistack": "1.x",
@@ -55,6 +56,8 @@
     "react": "16.x",
     "react-app-polyfill": "^1.0.6",
     "react-chartjs-2": "^2.10.0",
+    "react-copy-to-clipboard": "^5.0.2",
+    "react-countup": "^4.3.3",
     "react-custom-scrollbars": "4.x",
     "react-dev-utils": "^10.2.1",
     "react-dom": "16.x",
