@@ -40,17 +40,13 @@ const useStyles = makeStyles({
 export function CampaignStatus() {
     const intl = useIntl()
 
+    const [stats, setStats] = useState(null);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function fetchData() {
-            // eslint-disable-next-line no-console
-            // const response = await efpApiClient.requestEfpApi('/campaign/status/BDIPA').catch(setError);
-            const response = await efpApiClient.requestEfpApi('/admin/campaign/stats/BDIPA').catch(setError);
-            setStatus(response);
-        }
-        fetchData();
+        efpApiClient.requestEfpApi('/campaign/status/BDIPA').then(setStatus).catch(setError);
+        efpApiClient.requestEfpApi('/admin/campaign/stats/BDIPA').then(setStats).catch(setError);
     }, []);
 
     const classes = useStyles();
@@ -68,7 +64,8 @@ export function CampaignStatus() {
                 <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {status ? renderObj(status) : null}
+                {status ? <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} /> : null}
+                {stats ? renderObj(stats) : null}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
                 </FormControl>
@@ -78,12 +75,3 @@ export function CampaignStatus() {
 }
 
 export default memo(CampaignStatus);
-
-
-
-
-                // <h2>{pretiffyKey('totalRaisedShares byCountry')} </h2>
-                // {renderPie(status ? status.byCountry : [], 'Country', 'totalRaisedShares')}
-
-                // <h2>{pretiffyKey('uniqueInvestors byCountry')} </h2>
-                // {renderPie(status ? status.byCountry : [], 'Country', 'uniqueInvestors')}

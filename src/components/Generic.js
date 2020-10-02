@@ -70,7 +70,7 @@ const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = default
                     </TableBody>
                 </Table>
             </TableContainer>
-            <FormControl component="fieldset" error={error} className={classes.formControl}>
+            <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                 <FormHelperText>{helper}</FormHelperText>
             </FormControl>
         </div >)
