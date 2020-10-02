@@ -57,8 +57,8 @@ export function CampaignStatus() {
 
     const renderObj = (obj) => Object.keys(obj).map((key, index) =>
         Array.isArray(obj[key]) && obj[key].length ?
-            <ArrayRenderer columnNames={Object.keys(obj[key][0])} rows={obj[key]} title={pretiffyKey(key)} classes={classes} /> :
-            <ObjectRenderer name={key} obj={obj[key]} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+            <ArrayRenderer key={index} title={pretiffyKey(key)} rows={obj[key]} columnNames={Object.keys(obj[key][0])} classes={classes} /> :
+            <ObjectRenderer key={index} name={key} obj={obj[key]} fieldsWithPences={api.fieldsWithPences} classes={classes} />
     )
 
 
