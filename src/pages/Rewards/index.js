@@ -19,7 +19,10 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 import efpApiClient from '../../services/efpApiClient';
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles({
@@ -39,6 +42,7 @@ export function Benefits() {
     const [selectedRewardId, selectRewardId] = React.useState(NONE);
     const [selectedAmount, selectAmount] = React.useState(0);
     const { enqueueSnackbar } = useSnackbar()
+    useSessionTimeoutHandler(error)
 
     const handleChangeAmount = useCallback((event) => {
         selectAmount(event.target.value);
@@ -98,12 +102,12 @@ export function Benefits() {
     }
 
 
-    const sharesRewardsColumns = sharesRewards.length ? ['Action', ...Object.keys(sharesRewards[0])] : []
-    const referralRewardsColumns = referralRewards.length ? ['Action', ...Object.keys(referralRewards[0])] : []
+    const sharesRewardsColumns = sharesRewards && sharesRewards.length ? ['Action', ...Object.keys(sharesRewards[0])] : []
+    const referralRewardsColumns = referralRewards && referralRewards.length ? ['Action', ...Object.keys(referralRewards[0])] : []
 
-    const helper = !referralRewards.length && !sharesRewards.length ? 'No data' : '';
+    const helper = !sharesRewards || !referralRewards || !referralRewards.length || !sharesRewards.length ? 'No data' : '';
 
-
+    const allRewards = (referralRewards || []).concat(sharesRewards || [])
     return (
         <Page pageTitle={intl.formatMessage({ id: 'investorsRewards' })}>
             <Helmet>
@@ -129,7 +133,7 @@ export function Benefits() {
                 <DialogTitle id="form-dialog-title">{intl.formatMessage({ id: 'topUpStock' })}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {referralRewards.concat(sharesRewards).find(r => r.rewardId === selectedRewardId)?.title || ''}
+                        {allRewards.find(r => r?.rewardId === selectedRewardId)?.title || ''}
                     </DialogContentText>
                     <TextField
                         autoFocus

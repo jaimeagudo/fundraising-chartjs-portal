@@ -85,7 +85,7 @@ const SignIn = () => {
                 }
                 setAuth({ isAuthenticated: true, ...user })
                 setAuthMenuOpen(false)
-                history.push('/home')
+                history.replace('/home')
             }
         }
         event.preventDefault()
@@ -93,11 +93,11 @@ const SignIn = () => {
     }, [setAuth, setAuthMenuOpen, history, username, password, enqueueSnackbar])
 
     return (
-        <Page pageTitle={intl.formatMessage({ id: 'sign_in' })}>
+        <Page pageTitle={intl.formatMessage({ id: 'signIn' })}>
             <Paper className={classes.paper} elevation={6}>
                 <div className={classes.container}>
                     <Typography component="h1" variant="h5">
-                        {intl.formatMessage({ id: 'sign_in' })}
+                        {intl.formatMessage({ id: 'signIn' })}
                     </Typography>
                     <form className={classes.form} onSubmit={onSubmit} noValidate>
                         <TextField
@@ -133,7 +133,7 @@ const SignIn = () => {
                             color="primary"
                             className={classes.submit}
                         >
-                            {intl.formatMessage({ id: 'sign_in' })}
+                            {intl.formatMessage({ id: 'signIn' })}
                         </Button>
                     </form>
 

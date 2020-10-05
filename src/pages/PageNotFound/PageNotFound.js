@@ -8,52 +8,52 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useIntl } from 'react-intl'
 
 const useStyles = makeStyles((theme) => ({
-  icon: {
-    width: 192,
-    height: 192,
-    color: theme.palette.secondary.main,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: `100%`,
-  },
-  paper: {
-    backgroundColor: theme.palette.background.default,
-    margin: 0,
-    height: `calc(100vh - 64px)`,
-  },
-  button: {
-    marginTop: 20,
-  },
+    icon: {
+        width: 192,
+        height: 192,
+        color: theme.palette.secondary.main,
+    },
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: `100%`,
+    },
+    paper: {
+        backgroundColor: theme.palette.background.default,
+        margin: 0,
+        height: `calc(100vh - 64px)`,
+    },
+    button: {
+        marginTop: 20,
+    },
 }))
 
 const PageNotFound = () => {
-  const intl = useIntl()
-  const classes = useStyles()
+    const intl = useIntl()
+    const classes = useStyles()
 
-  return (
-    <Page pageTitle={intl.formatMessage({ id: 'page_not_found' })}>
-      <Paper className={classes.paper}>
-        <div className={classes.container}>
-          <Typography variant="h4">404</Typography>
-          <Typography variant="subtitle1">
-            {intl.formatMessage({ id: 'page_not_found' })}
-          </Typography>
-          <Button
-            color="secondary"
-            aria-label="home"
-            href="/"
-            className={classes.button}
-          >
-            <Home />
-          </Button>
-        </div>
-      </Paper>
-    </Page>
-  )
+    return (
+        <Page pageTitle={intl.formatMessage({ id: 'pageNotFound' })}>
+            <Paper className={classes.paper}>
+                <div className={classes.container}>
+                    <Typography variant="h4">404</Typography>
+                    <Typography variant="subtitle1">
+                        {intl.formatMessage({ id: 'pageNotFound' })}
+                    </Typography>
+                    <Button
+                        color="primary"
+                        aria-label="home"
+                        href="/"
+                        className={classes.button}
+                    >
+                        <Home />
+                    </Button>
+                </div>
+            </Paper>
+        </Page>
+    )
 }
 
 export default PageNotFound

@@ -8,14 +8,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import Table from '@material-ui/core/Table';
-
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -25,24 +17,8 @@ import MoneyOff from '@material-ui/icons/MoneyOff';
 import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 
 import efpApiClient from '../../services/efpApiClient';
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
-const StyledTableCell = withStyles((theme) => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
-    },
-    body: {
-        fontSize: 14,
-    },
-}))(TableCell);
-
-const StyledTableRow = withStyles((theme) => ({
-    root: {
-        '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-        },
-    },
-}))(TableRow);
 
 const useStyles = makeStyles({
     table: {
@@ -59,6 +35,8 @@ export function CustomerInformation() {
     const classes = useStyles();
     const { magentoUserId } = useParams();
     const [error, setError] = useState(null);
+    useSessionTimeoutHandler(error)
+
     const [result, setResult] = useState(null);
     const helper = (error && error.message) || (!result && 'No data') || '';
     const [requestDate, setRequestDate] = useState(new Date());

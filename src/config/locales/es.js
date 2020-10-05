@@ -1,14 +1,14 @@
 import { defineMessages } from 'react-intl'
 
 const messages = defineMessages({
-    app_name: 'Brewdog EFP Portal de Soporte',
-    sign_in: 'Iniciar sesión',
-    sign_out: 'Cerrar sesión',
+    appName: 'Brewdog EFP Portal de Soporte',
+    signIn: 'Iniciar sesión',
+    signOut: 'Cerrar sesión',
     username: 'Usuario',
     password: 'Password',
     about: 'Acerca de',
     home: 'Inicio',
-    page_not_found: 'Página no encontrada',
+    pageNotFound: 'Página no encontrada',
     settings: 'Ajustes',
     theme: 'Theme',
     default: 'Por defecto',
@@ -18,7 +18,7 @@ const messages = defineMessages({
     en: 'Inglés',
     es: 'Español',
     menu: 'Menu',
-    menu_mini_mode: 'Mini menu',
+    menuMiniMode: 'Mini menu',
     offline: 'Sin conexión',
 })
 

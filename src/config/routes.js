@@ -7,27 +7,17 @@ import { Route } from 'react-router-dom'
 const SignIn = lazy(() => import('../pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('../pages/SignUp/SignUp'))
 const About = lazy(() => import('../pages/About/About'))
-const Home = lazy(() => import('../pages/Home/Home'))
 const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
 const SharesApplications = lazy(() => import('../pages/SharesApplications'))
 const CustomerInformation = lazy(() => import('../pages/CustomerInformation'))
 const LockedAccounts = lazy(() => import('../pages/LockedAccounts'))
 const Rewards = lazy(() => import('../pages/Rewards'))
-const DialogDemo = lazy(() => import('../pages/DialogDemo/DialogDemo'))
-const ToastDemo = lazy(() => import('../pages/ToastDemo/ToastDemo'))
 
 const routes = [
+    <Route path="/" redirectTo="/signin" exact component={SignIn} />,
+    <Route path="/about" exact component={About} />,
     <PublicRoute path="/signin" redirectTo="/" exact component={SignIn} />,
     <PublicRoute path="/signup" redirectTo="/" exact component={SignUp} />,
-    <Route
-        path="/"
-        redirectTo="/signin"
-        exact
-        component={SignIn}
-    />,
-
-    <Route path="/about" exact component={About} />,
-    // <PrivateRoute path="/home" exact component={Home} />,
     <PrivateRoute path="/home" exact component={CampaignStatus} />,
     <PrivateRoute path="/campaign/status" exact component={CampaignStatus} />,
     <PrivateRoute path="/sharesApplications" exact component={SharesApplications} />,
@@ -37,8 +27,6 @@ const routes = [
     <PrivateRoute path="/customerInformation/:magentoUserId" exact component={CustomerInformation} />,
     <PrivateRoute path="/lockedAccounts" exact component={LockedAccounts} />,
     <PrivateRoute path="/rewards" exact component={Rewards} />,
-    // <PrivateRoute path="/dialog_demo" exact component={DialogDemo} />,
-    // <PrivateRoute path="/toast_demo" exact component={ToastDemo} />,
 ]
 
 export default routes

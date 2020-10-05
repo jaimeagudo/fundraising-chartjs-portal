@@ -5,6 +5,8 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
 
+
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
@@ -13,6 +15,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MoneyOff from '@material-ui/icons/MoneyOff';
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -37,6 +40,7 @@ export function SharesApplications() {
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
     const [paymentReference, setPaymentReference] = useState(params.paymentReference || '');
     const [requestDate, setRequestDate] = useState(new Date());
+    useSessionTimeoutHandler(error)
 
     useEffect(() => {
         let ignore = false;
