@@ -17,6 +17,7 @@ import MoneyOff from '@material-ui/icons/MoneyOff';
 import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 
 import efpApiClient from '../../services/efpApiClient';
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 
 const useStyles = makeStyles({
@@ -34,6 +35,8 @@ export function CustomerInformation() {
     const classes = useStyles();
     const { magentoUserId } = useParams();
     const [error, setError] = useState(null);
+    useSessionTimeoutHandler(error)
+
     const [result, setResult] = useState(null);
     const helper = (error && error.message) || (!result && 'No data') || '';
     const [requestDate, setRequestDate] = useState(new Date());

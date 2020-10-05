@@ -5,6 +5,7 @@ import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom';
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -27,6 +28,7 @@ export function LockedAccounts() {
     const [result, setResult] = useState(null);
     const helper = (error && error.message) || (!result && 'No data') || '';
     const [requestDate, setRequestDate] = useState(new Date());
+    useSessionTimeoutHandler(error)
 
     useEffect(() => {
         async function fetchData() {

@@ -1,6 +1,9 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import CountUp from 'react-countup'
+import { useIntl, FormattedMessage } from 'react-intl'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
+
 import { makeStyles, withTheme } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -11,14 +14,11 @@ import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import Group from '@material-ui/icons/Group';
 
 import efpApiClient from '../../services/efpApiClient';
-import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
-import CountUp from 'react-countup'
-
-
 import api from '../../config/api'
-
-import { useIntl, FormattedMessage } from 'react-intl'
+import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { pretiffyKey, fixedColors } from '../../utils'
+import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
+
 
 
 const renderPie = (array, labelKey, dataKey) => {
@@ -42,7 +42,6 @@ const useStyles = makeStyles({
     },
 });
 
-
 function CampaignStatus({ theme }) {
 
     const intl = useIntl()
@@ -50,6 +49,7 @@ function CampaignStatus({ theme }) {
     const [stats, setStats] = useState(null);
     const [status, setStatus] = useState(null);
     const [error, setError] = useState(null);
+    useSessionTimeoutHandler(error)
 
     useEffect(() => {
         efpApiClient.requestEfpApi('/campaign/status/BDIPA').then(setStatus).catch(setError);
@@ -74,24 +74,24 @@ function CampaignStatus({ theme }) {
                 {status ?
                     (<div>
                         <div style={{ margin: 30 }}>
-                    <CountUp
+                            <CountUp
                                 style={theme.typography.h2}
-                        separator=','
-                        prefix="£"
-                        start={0}
-                        end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
-                    />
+                                separator=','
+                                prefix="£"
+                                start={0}
+                                end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
+                            />
                             <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                    </div>
+                        </div>
                         <div style={{ margin: 30 }}>
-                    <CountUp
+                            <CountUp
                                 style={theme.typography.h2}
-                        separator=','
-                        start={0}
-                        end={status && status.investorsCountTomorrow}
-                    />
+                                separator=','
+                                start={0}
+                                end={status && status.investorsCountTomorrow}
+                            />
                             <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                </div>
+                        </div>
                         <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
                     </div>) : null
                 }
@@ -99,8 +99,8 @@ function CampaignStatus({ theme }) {
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>
                 </FormControl>
-            </Scrollbar>
-        </Page>
+            </Scrollbar >
+        </Page >
     )
 }
 

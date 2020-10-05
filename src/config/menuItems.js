@@ -68,8 +68,8 @@ const getMenuItems = (props) => {
                     : () => { },
                 visible: true,
                 primaryText: isAuthorised
-                    ? intl.formatMessage({ id: 'sign_out' })
-                    : intl.formatMessage({ id: 'sign_in' }),
+                    ? intl.formatMessage({ id: 'signOut' })
+                    : intl.formatMessage({ id: 'signIn' }),
                 leftIcon: isAuthorised ? <ExitToAppIcon /> : <LockIcon />,
             },
         ]
@@ -147,7 +147,7 @@ const getMenuItems = (props) => {
                         setMiniMode(!useMiniMode)
                     },
                     primaryText: intl.formatMessage({
-                        id: 'menu_mini_mode',
+                        id: 'menuMiniMode',
                     }),
                     leftIcon: useMiniMode ? <MenuOpenIcon /> : <ChromeReaderMode />,
                 },
