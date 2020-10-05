@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
 import { useParams, Link } from 'react-router-dom';
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -14,8 +14,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
-import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
+import { ArrayRenderer } from 'components/Generic'
 
+import { prettifyValue } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
@@ -94,7 +95,7 @@ export function CustomerInformation() {
                         Refund
                     </Button>
             default:
-                return row[key];
+                return prettifyValue(row[key]);
         }
     }
     const columnNames = {

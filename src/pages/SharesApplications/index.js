@@ -4,6 +4,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
+import { prettifyValue, fixedColors } from '../../utils'
 
 
 
@@ -82,7 +83,7 @@ export function SharesApplications() {
                         Refund
                     </Button>
             default:
-                return String(row[key]);
+                return prettifyValue(row[key]);
         }
     }
 

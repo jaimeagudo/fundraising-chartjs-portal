@@ -38,7 +38,7 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const defaultCellMapper = (row, key, classes) => row[key]
+const defaultCellMapper = (row, key, classes) => prettifyValue(row[key])
 
 const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null }) => {
     const { enqueueSnackbar } = useSnackbar()

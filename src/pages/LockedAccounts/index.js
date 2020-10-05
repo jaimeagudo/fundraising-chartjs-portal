@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
+import { prettifyValue } from '../../utils'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -67,7 +68,7 @@ export function LockedAccounts() {
     const lockedAccountsColumnNames = result && result && result.length ? [...Object.keys(result[0]), 'Action'] : [];
 
 
-    const cellMapper = (row, key, classes) => {
+    const lockedAccountsCellMapper = (row, key, classes) => {
         switch (key) {
             case 'magentoUserId': return (<Link to={`/customerInformation/${row.magentoUserId}`}>{row.magentoUserId}</Link>)
             case 'Action': return (<Button
@@ -77,7 +78,7 @@ export function LockedAccounts() {
                 onClick={() => onUnlockClick(row['magentoUserId'])}
                 startIcon={<LockOpenIcon />}
             >Unlock  </Button>)
-            default: return row[key]
+            default: return prettifyValue(row[key])
         }
 
     }
@@ -103,7 +104,7 @@ export function LockedAccounts() {
                     columnNames={lockedAccountsColumnNames}
                     classes={classes}
                     error={error && error.message}
-                    cellMapper={cellMapper} />
+                    cellMapper={lockedAccountsCellMapper} />
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>

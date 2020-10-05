@@ -1,4 +1,6 @@
-import { format, parseISO } from 'date-fns'
+import React from 'react';
+import Tooltip from '@material-ui/core/Tooltip';
+import { format, parseISO, formatDistanceToNow } from 'date-fns'
 const DATE_FORMAT_STRING = 'yyyy-MM-dd'
 
 
@@ -16,12 +18,15 @@ const prettifyValue = (field, withPences) => {
             return Number.parseFloat(withPences ? (field / 100) : field).toLocaleString(undefined, { maximumFractionDigits: 2 })
         case 'string':
             try {
-                return format(parseISO(field), DATE_FORMAT_STRING)
+                return (<Tooltip title={field}>
+                    <p>{formatDistanceToNow(parseISO(field), { addSuffix: true })}</p>
+                </Tooltip>)
             } catch (e) {
-                return field
+                return field !== null && field !== undefined && field !== 'null' ? field : '';
             }
-        case 'object': return JSON.stringify(field)
-        default: return String(field);
+        case 'undefined': return '';
+        default:
+        case 'object': return field !== null ? JSON.stringify(field) : ''
     }
 }
 

@@ -20,7 +20,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
+import { prettifyValue, } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
@@ -96,7 +96,7 @@ export function Benefits() {
                     startIcon={<PlaylistAddIcon />}>
                     {intl.formatMessage({ id: 'topUp' })}
                 </Button>)
-            default: return row[key]
+            default: return prettifyValue(row[key])
         }
 
     }
