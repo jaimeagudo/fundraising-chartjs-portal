@@ -15,6 +15,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
+
+
+import Typography from '@material-ui/core/Typography'
+
 import { useSnackbar } from 'notistack'
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -42,6 +46,7 @@ const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = default
 
     return (
         <div key={title}>
+            {/* <Typography variant="h2">{title}</Typography> */}
             <h2>{title}</h2>
             {rows && rows.length &&
                 <CopyToClipboard text={new Parser().parse(rows)}

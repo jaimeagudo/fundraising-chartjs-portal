@@ -71,36 +71,30 @@ function CampaignStatus({ theme }) {
                 <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                <div style={{ display: 'flex', flexDirection: 'row', margin: 30 }}>
+                {status ?
+                    (<div>
+                        <div style={{ margin: 30 }}>
                     <CountUp
-                        style={{
-                            fontSize: 60,
-                            // color: theme.palette.primary.main,
-                            // fontFamily: theme.fontFamily
-                        }}
+                                style={theme.typography.h2}
                         separator=','
                         prefix="£"
                         start={0}
                         end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
                     />
-                    <div>
-                        <AccountBalanceIcon color="primary" className="material-icons" style={{ fontSize: 70, marginLeft: 16 }} />
+                            <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
                     </div>
+                        <div style={{ margin: 30 }}>
                     <CountUp
-                        style={{
-                            fontSize: 60,
-                            // color: theme.palette.primary.main,
-                            // fontFamily: theme.fontFamily
-                        }}
+                                style={theme.typography.h2}
                         separator=','
                         start={0}
                         end={status && status.investorsCountTomorrow}
                     />
-                    <div>
-                        <Group color="primary" className="material-icons" style={{ fontSize: 70, marginLeft: 16 }} />
-                    </div>
+                            <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
                 </div>
-                {status ? <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} /> : null}
+                        <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+                    </div>) : null
+                }
                 {stats ? renderObj(stats) : null}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>

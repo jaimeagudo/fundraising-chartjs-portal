@@ -1,14 +1,14 @@
 import { defineMessages } from 'react-intl'
 
 const messages = defineMessages({
-    app_name: 'React Most Wanted',
-    sign_in: 'Sign in',
-    sign_out: 'Sign out',
+    appName: 'React Most Wanted',
+    signIn: 'Sign in',
+    signOut: 'Sign out',
     username: 'Username',
     password: 'Password',
     about: 'About',
     home: 'Home',
-    page_not_found: 'Page not found',
+    pageNotFound: 'Page not found',
     settings: 'Settings',
     theme: 'Theme',
     default: 'Default',
@@ -18,7 +18,7 @@ const messages = defineMessages({
     en: 'English',
     es: 'Spanish',
     menu: 'Menu',
-    menu_mini_mode: 'Mini menu',
+    menuMiniMode: 'Mini menu',
     offline: 'Offline',
     campaignStatus: 'Campaign Status',
     sharesApplications: 'Shares Applications',
@@ -33,7 +33,7 @@ const messages = defineMessages({
     topUp: 'Top up',
     cancel: 'Cancel',
     noDate: 'No data',
-
+    sessionTimeout: 'Session timed out, please sign in again'
 })
 
 export default messages
