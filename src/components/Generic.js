@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, memo } from 'react';
 import { Parser } from 'json2csv';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { pretiffyKey, prettifyValue } from '../utils'
@@ -40,9 +40,11 @@ const StyledTableRow = withStyles((theme) => ({
 
 const defaultCellMapper = (row, key, classes) => prettifyValue(row[key])
 
-const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null }) => {
+const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null, showLength = false, stickyHeader = false }) => {
     const { enqueueSnackbar } = useSnackbar()
     const helper = error || (rows && rows.length ? '' : 'No data')
+    const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
+    const startIcon = <CopyIcon />
 
     return (
         <div key={title}>
@@ -50,11 +52,11 @@ const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = default
             <h2>{title}</h2>
             {rows && rows.length &&
                 <CopyToClipboard text={new Parser().parse(rows)}
-                    onCopy={() => enqueueSnackbar(`${title} copied`, { variant: 'success' })} >
-                    <Button color="primary" startIcon={<CopyIcon />}>Copy to clipboard</Button>
+                    onCopy={onCopy}>
+                    <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
                 </CopyToClipboard>}
             <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="customized table">
+                <Table stickyHeader className={classes.table} aria-label="customized table">
                     {rows && rows.length ?
                         (<TableHead>
                             <TableRow>
@@ -79,25 +81,30 @@ const ArrayRenderer = ({ columnNames, rows, title, classes, cellMapper = default
                 <FormHelperText>{helper}</FormHelperText>
             </FormControl>
         </div >)
-}
+})
 
 
-const ObjectRenderer = ({ obj, classes, fieldsWithPences, name }) => {
+const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
+
+
+
     const { enqueueSnackbar } = useSnackbar()
+    /*Non empty/null values are listed first */
+    const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
+    const title = pretiffyKey(name)
+    const text = new Parser({ fields }).parse(obj)
+    const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
+    const startIcon = <CopyIcon />
 
     if (!obj) {
         return null
     }
-
-    /*Non empty/null values are listed first */
-    const fields = Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0)
-    const title = pretiffyKey(name)
     return (<div key={name} >
         <h2>{title}</h2>
-        {<CopyToClipboard text={new Parser({ fields }).parse(obj)}
-            onCopy={() => enqueueSnackbar(`${title} copied`, { variant: 'success' })} >
-            <Button color="primary" startIcon={<CopyIcon />}>Copy to clipboard</Button>
-        </CopyToClipboard>}
+        <CopyToClipboard text={text}
+            onCopy={onCopy} >
+            <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
+        </CopyToClipboard>
         <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
                 <TableBody>
@@ -111,5 +118,5 @@ const ObjectRenderer = ({ obj, classes, fieldsWithPences, name }) => {
             </Table>
         </TableContainer>
     </div>)
-}
+})
 export { ObjectRenderer, ArrayRenderer }
