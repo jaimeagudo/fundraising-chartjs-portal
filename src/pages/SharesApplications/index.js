@@ -5,17 +5,19 @@ import { Link, useParams } from 'react-router-dom'
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
 import { prettifyValue, fixedColors } from '../../utils'
-
+import Typography from '@material-ui/core/Typography'
 
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Paper from '@material-ui/core/Paper';
+import Search from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MoneyOff from '@material-ui/icons/MoneyOff';
+
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 
@@ -27,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
         padding: theme.spacing(2),
         textAlign: 'center',
         color: theme.palette.text.secondary,
-    }
+    },
+    search: {
+        // margin: 2000,
+        // textAlign: 'center',
+        color: theme.palette.primary,
+    },
 }));
 
 export function SharesApplications() {
@@ -71,7 +78,7 @@ export function SharesApplications() {
     const getColumnContent = (row, key, classes) => {
         switch (key) {
             case 'MagentoUserId':
-                return <Link to={`/customerInformation/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
+                return <Link to={`/customers/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button
@@ -94,9 +101,13 @@ export function SharesApplications() {
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <Paper className={classes.paper}>
-                    <h1>Search</h1>
                     <form noValidate autoComplete="off">
                         <Grid container spacing={6}>
+                            <Grid item  >
+                                <div >
+                                    <h1 className={classes.search}>Search<Search /></h1>
+                                </div>
+                            </Grid>
                             <Grid item >
                                 <TextField id="email"
                                     label='Email address'

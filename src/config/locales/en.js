@@ -23,6 +23,7 @@ const messages = defineMessages({
     campaignStatus: 'Campaign Status',
     sharesApplications: 'Shares Applications',
     customerInformation: 'Customer Information - {magentoUserId}',
+    customers: 'Customers',
     lockedAccounts: 'Locked Accounts',
     investorsRewards: 'Investors rewards',
     sharesRewards: 'Shares rewards',
