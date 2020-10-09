@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef, useMemo, memo } from '
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
 import { useParams, Link } from 'react-router-dom';
+import queryString from 'query-string';
 
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -20,8 +21,6 @@ import Search from '@material-ui/icons/Search';
 import { prettifyValue } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
-import useDebouncedEffect from 'hooks/useDebouncedEffect'
-
 
 const styles = {
     table: {
@@ -30,36 +29,18 @@ const styles = {
 };
 
 
-const useScroll = () => {
-    const scrollRef = useRef(null)
-    const scrollToRef = () => {
-        window.focus();
-        window.scrollTo({ behavior: 'smooth', top: scrollRef.current.offsetTop })
-        // .(0, ref.current.offsetTop)
-        console.log('scroll ' + scrollRef.current.offsetTop)
-    }
-
-    return [scrollToRef, scrollRef]
-}
-
-
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
-
-
 export function CustomerInformation() {
-    let scrollRef = null
-    // const [scrollToRef, scrollRef] = useScroll()
     const params = useParams();
     const intl = useIntl()
     const classes = useMemo(() => makeStyles(styles));
     const [email, setEmail] = useState(params.email || '');
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
     const [selectedMagentoUserId, setSelectedMagentoUserId] = useState(params.magentoUserId || '');
-    console.log("PROPS =>", { selectedMagentoUserId, magentoUserId, email })
 
     const [error, setError] = useState(null);
-    // useSessionTimeoutHandler(error)
+    useSessionTimeoutHandler(error)
 
     const [customer, setCustomer] = useState(null);
     const [participants, setParticipants] = useState(null);
@@ -70,10 +51,7 @@ export function CustomerInformation() {
             const result = await efpApiClient.requestEfpApi(
                 `/customers/${selectedMagentoUserId}/all-information/BDIPA`)
                 .catch(setError);
-
-
             setCustomer(result);
-            // console.log("fetchCustomerInformation-all -> email", selectedMagentoUserId)
         }
         selectedMagentoUserId && fetchCustomer()
         console.log("fetchAll -> selectedMagentoUserId", selectedMagentoUserId)
@@ -81,25 +59,26 @@ export function CustomerInformation() {
     }, [selectedMagentoUserId])
 
 
-    // useDebouncedEffect(() => {
+
     useEffect(() => {
         const controller = new AbortController();
         const signal = controller.signal;
 
         async function search() {
-            const result = await efpApiClient.requestEfpApi(
-                `/customers/search?email=${email}&magentoUserId=${magentoUserId}`, { signal })
-                .catch(setError);
+            const endpoint = queryString.stringifyUrl(
+                { url: '/customers/search', query: { email, magentoUserId, limit: 5 } },
+                { skipEmptyString: true, skipNull: true })
+
+            const result = await efpApiClient.requestEfpApi(endpoint, { signal })
+                .catch(e => e && !e.message.indexOf('aborted') && setError(e));
             setParticipants(result);
         }
         (magentoUserId || (email && email.length > 3)) && search()
-        console.log("useDebouncedEffect -> email", email)
-        console.log("useDebouncedEffect -> magentoUserId", magentoUserId)
         return function cleanup() {
             console.log(`#### cancelling /customers/search?email=${email}&magentoUserId=${magentoUserId}`)
             controller.abort()
         }
-    }, [magentoUserId, email], 500);
+    }, [magentoUserId, email]);
 
     const onRefundClick = useCallback((paymentReference) => {
         console.log(paymentReference)
@@ -108,7 +87,6 @@ export function CustomerInformation() {
                 `/admin/sharesApplications/${paymentReference}/refund`,
                 { method: 'POST', })
                 .catch(setError);
-            // setRequestDate(new Date());
         }
         refundClick()
     }, []);
@@ -120,7 +98,6 @@ export function CustomerInformation() {
                 { method: 'PUT', })
                 .catch(setError);
             setCustomer(unlockResult);
-            // setRequestDate(new Date());
         }
         unlockAccount()
     }, [magentoUserId])
@@ -175,8 +152,6 @@ export function CustomerInformation() {
         discountCards: getColumnNames(customer, 'discountCards'),
         participants: participants && participants.length ? ['Action', ...Object.keys(participants[0])] : [],
     }
-    console.log("render-CustomerInformation -> magentoUserId", magentoUserId)
-    console.log("render-CustomerInformation -> email", email)
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })}>
@@ -221,122 +196,119 @@ export function CustomerInformation() {
 
 
 
-                {/* <div ref={scrollRef}> */}
-                <div ref={ref => scrollRef = ref}>
-                    {customer &&
-                        <div>
-                            <h1>Basic details</h1>
-                            <Grid container spacing={3}>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Magento User Id"
-                                        value={customer.magentoUserId}
-                                        InputProps={{ readOnly: true, }}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Account locked on date"
-                                        error={!!customer.lockedAccountAt}
-                                        value={customer.lockedAccountAt || "UNLOCKED"}
-                                        variant="outlined"
-                                        InputProps={{
-                                            readOnly: true,
-                                            endAdornment: (customer.lockedAccountAt ?
-                                                <InputAdornment position='start' >
-                                                    <Button
-                                                        variant="contained"
-                                                        color="secondary"
-                                                        className={classes.button}
-                                                        onClick={onUnlockClick}
-                                                        startIcon={<LockOpenIcon />}
-                                                    >Unlock
-                                            </Button>
-                                                </InputAdornment> : null
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-
-                                        id='NumberofShares'
-                                        label='Number of Shares'
-                                        variant="outlined"
-                                        defaultValue={'  '}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position='start' >
-                                                    <Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
-                                                        {customer.numberOfShares}
-                                                    </Link>
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Referral Code"
-                                        value={customer.referralCode || ''}
-                                        InputProps={{ readOnly: true, }}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Number of Referrals"
-                                        value={customer.numberOfReferrals || 0}
-                                        InputProps={{ readOnly: true, }}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Referral - Last 7 days position"
-                                        value={customer.referralLastSevenDaysPosition || 'N/A'}
-                                        InputProps={{ readOnly: true, }}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <TextField
-                                        label="Referral - Overall position"
-                                        value={customer.referralOverallPosition || 'N/A'}
-                                        InputProps={{ readOnly: true, }}
-                                        variant="outlined"
-                                    />
-                                </Grid>
+                {customer &&
+                    <div>
+                        <h1>Basic details</h1>
+                        <Grid container spacing={3}>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Magento User Id"
+                                    value={customer.magentoUserId}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
                             </Grid>
-                            <ArrayRenderer title={'Purchased Vouchers'}
-                                columnNames={columnNames.purchasedVouchers}
-                                rows={customer.purchasedVouchers}
-                                classes={classes}
-                                cellMapper={customerDataCellMapper} />
-                            <ArrayRenderer title={'Claimed Share Rewards'}
-                                columnNames={columnNames.claimedShareRewards}
-                                rows={customer.claimedShareRewards}
-                                classes={classes}
-                                cellMapper={customerDataCellMapper} />
-                            <ArrayRenderer title={'Claimed referral Rewards'}
-                                columnNames={columnNames.claimedReferralRewards}
-                                rows={customer.claimedReferralRewards}
-                                classes={classes}
-                                cellMapper={customerDataCellMapper} />
-                            <ArrayRenderer title={'Referral League Events'}
-                                columnNames={columnNames.referralLeagueEvents}
-                                rows={customer.referralLeagueEvents}
-                                classes={classes}
-                                cellMapper={customerDataCellMapper} />
-                            <ArrayRenderer title={'Discount Cards'}
-                                columnNames={columnNames.discountCards}
-                                rows={customer.discountCards}
-                                classes={classes}
-                                cellMapper={customerDataCellMapper} />
-                        </div>}
-                </div>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Account locked on date"
+                                    error={!!customer.lockedAccountAt}
+                                    value={customer.lockedAccountAt || "UNLOCKED"}
+                                    variant="outlined"
+                                    InputProps={{
+                                        readOnly: true,
+                                        endAdornment: (customer.lockedAccountAt ?
+                                            <InputAdornment position='start' >
+                                                <Button
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    className={classes.button}
+                                                    onClick={onUnlockClick}
+                                                    startIcon={<LockOpenIcon />}
+                                                >Unlock
+                                            </Button>
+                                            </InputAdornment> : null
+                                        ),
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+
+                                    id='NumberofShares'
+                                    label='Number of Shares'
+                                    variant="outlined"
+                                    defaultValue={'  '}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position='start' >
+                                                <Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
+                                                    {customer.numberOfShares}
+                                                </Link>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Referral Code"
+                                    value={customer.referralCode || ''}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Number of Referrals"
+                                    value={customer.numberOfReferrals || 0}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Referral - Last 7 days position"
+                                    value={customer.referralLastSevenDaysPosition || 'N/A'}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={3}>
+                                <TextField
+                                    label="Referral - Overall position"
+                                    value={customer.referralOverallPosition || 'N/A'}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                        </Grid>
+                        <ArrayRenderer title={'Purchased Vouchers'}
+                            columnNames={columnNames.purchasedVouchers}
+                            rows={customer.purchasedVouchers}
+                            classes={classes}
+                            cellMapper={customerDataCellMapper} />
+                        <ArrayRenderer title={'Claimed Share Rewards'}
+                            columnNames={columnNames.claimedShareRewards}
+                            rows={customer.claimedShareRewards}
+                            classes={classes}
+                            cellMapper={customerDataCellMapper} />
+                        <ArrayRenderer title={'Claimed referral Rewards'}
+                            columnNames={columnNames.claimedReferralRewards}
+                            rows={customer.claimedReferralRewards}
+                            classes={classes}
+                            cellMapper={customerDataCellMapper} />
+                        <ArrayRenderer title={'Referral League Events'}
+                            columnNames={columnNames.referralLeagueEvents}
+                            rows={customer.referralLeagueEvents}
+                            classes={classes}
+                            cellMapper={customerDataCellMapper} />
+                        <ArrayRenderer title={'Discount Cards'}
+                            columnNames={columnNames.discountCards}
+                            rows={customer.discountCards}
+                            classes={classes}
+                            cellMapper={customerDataCellMapper} />
+                    </div>}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>
