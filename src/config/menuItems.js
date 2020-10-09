@@ -9,6 +9,7 @@ import LanguageIcon from '@material-ui/icons/Language'
 import SettingsIcon from '@material-ui/icons/SettingsApplications'
 import MenuOpenIcon from '@material-ui/icons/MenuOpen'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
+import Group from '@material-ui/icons/Group';
 import RedeemIcon from '@material-ui/icons/Redeem';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
@@ -80,11 +81,18 @@ const getMenuItems = (props) => {
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'campaignStatus' }),
             leftIcon: <PollIcon />,
-        }, {
+        },
+        {
             value: '/sharesApplications',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'sharesApplications' }),
             leftIcon: <FindInPageIcon />,
+        },
+        {
+            value: '/customers',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'customers' }),
+            leftIcon: <Group />,
         },
         {
             value: '/lockedAccounts',

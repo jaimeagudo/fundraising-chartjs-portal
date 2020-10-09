@@ -16,6 +16,7 @@ import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Button from '@material-ui/core/Button';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 
+
 const useStyles = makeStyles({
     table: {
         minWidth: 650,
@@ -70,7 +71,7 @@ export function LockedAccounts() {
 
     const lockedAccountsCellMapper = (row, key, classes) => {
         switch (key) {
-            case 'magentoUserId': return (<Link to={`/customerInformation/${row.magentoUserId}`}>{row.magentoUserId}</Link>)
+            case 'magentoUserId': return (<Link to={`/customers/${row.magentoUserId}`}>{row.magentoUserId}</Link>)
             case 'Action': return (<Button
                 variant="contained"
                 color="secondary"
