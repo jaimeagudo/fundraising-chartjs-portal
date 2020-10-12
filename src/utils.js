@@ -1,6 +1,6 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
-import { format, parseISO, formatDistanceToNow } from 'date-fns'
+import { format, parseISO, formatDistanceToNow, formatDistanceStrict, differenceInDays } from 'date-fns'
 const DATE_FORMAT_STRING = 'yyyy-MM-dd'
 
 
@@ -11,23 +11,29 @@ function pretiffyKey(name) {
 }
 
 // eslint-disable-next-line no-restricted-globals
-const prettifyValue = (field, withPences, isGBP) => {
-    switch (typeof field) {
+const prettifyValue = (value, withPences, isGBP) => {
+    switch (typeof value) {
         case 'number':
             // eslint-disable-next-line radix
-            const formattedNum = Number.parseFloat(withPences ? (field / 100) : field).toLocaleString(undefined, { maximumFractionDigits: 2 })
+            const formattedNum = Number.parseFloat(withPences ? (value / 100) : value).toLocaleString(undefined, { maximumFractionDigits: 2 })
             return withPences || isGBP ? `£${formattedNum}` : formattedNum
         case 'string':
             try {
-                return (<Tooltip title={field}>
-                    <p>{formatDistanceToNow(parseISO(field), { addSuffix: true })}</p>
-                </Tooltip>)
+                const date = parseISO(value)
+                const now = new Date()
+                const dateInWords = Math.abs(differenceInDays(date, now)) >= 28 ?
+                    formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true }) :
+                    formatDistanceToNow(parseISO(value), { addSuffix: true })
+                return (
+                    <Tooltip title={value}>
+                        <p>{dateInWords}</p>
+                    </Tooltip>)
             } catch (e) {
-                return field !== null && field !== undefined && field !== 'null' ? field : '';
+                return value !== null && value !== undefined && value !== 'null' ? value : '';
             }
         case 'undefined': return '';
         default:
-        case 'object': return field !== null ? JSON.stringify(field) : ''
+        case 'object': return value !== null ? JSON.stringify(value) : ''
     }
 }
 
