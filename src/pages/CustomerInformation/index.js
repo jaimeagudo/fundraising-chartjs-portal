@@ -22,19 +22,43 @@ import { prettifyValue } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
-const styles = {
-    title: {
-        paddingLeft: 10,
-    },
-};
 
+const flex = {
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'space-evenly'
+}
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        padding: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+    },
+    search: {
+        padding: 0,
+        margin: theme.spacing(1),
+        alignItems: 'baseline',
+        color: theme.palette.primary,
+
+    },
+    title: {
+        paddingLeft: theme.spacing(1),
+    },
+    paper: {
+        ...flex,
+        padding: theme.spacing(8),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+    },
+}));
 
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
 export function CustomerInformation() {
     const params = useParams();
     const intl = useIntl()
-    const classes = useMemo(() => makeStyles(styles));
+    const classes = useStyles();
     const [email, setEmail] = useState(params.email || '');
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
     const [selectedMagentoUserId, setSelectedMagentoUserId] = useState(params.magentoUserId || '');
@@ -159,34 +183,39 @@ export function CustomerInformation() {
                 <title>{intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                <Paper className={classes.paper}>
-                    <form noValidate autoComplete="off">
-                        <Grid container spacing={6}>
-                            <Grid item  >
-                                <div >
-                                    <h1 className={classes.search}>Search<Search /></h1>
-                                </div>
-                            </Grid>
-                            <Grid item >
-                                <TextField id="email"
-                                    label='Email address'
-                                    placeholder="gmail"
-                                    helperText="Partial substrings work too"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value || '')} />
-                            </Grid>
-                            <Grid item >
-                                <TextField id="magentoUserId"
-                                    placeholder="123456"
-                                    label="Magento User Id"
-                                    type="number"
-                                    helperText="Magento User Id"
-                                    value={magentoUserId}
-                                    onChange={(event) => setMagentoUserId(event.target.value || '')} />
-                            </Grid>
+
+
+
+                <form className={classes.root} noValidate autoComplete="off">
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={12} md={3}  >
+                            <h2 className={classes.search} >Search<Search /></h2>
                         </Grid>
-                    </form>
-                    <ArrayRenderer title={`${participants ? participants.length : 0} Participants found`}
+                        <Grid item xs={12} sm={4} md={3}   >
+                            <TextField id="email"
+                                // label='Email address'
+                                placeholder="gmail"
+                                helperText="Email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value || '')} />
+
+                        </Grid>
+                        <Grid item xs={12} sm={4} md={3}  >
+                            <TextField id="magentoUserId"
+                                placeholder="123456"
+                                // label="Magento User Id"
+                                helperText="Magento User Id"
+                                value={magentoUserId}
+                                onChange={(event) => setMagentoUserId(event.target.value || '')} />
+
+                        </Grid>
+
+
+                    </Grid>
+                </form>
+
+                <Paper className={classes.root}>
+                    <ArrayRenderer title={participants && participants.length ? 'Customers' : ''}
                         dense
                         columnNames={columnNames.participants}
                         rows={participants}
@@ -194,25 +223,23 @@ export function CustomerInformation() {
                         cellMapper={participantsCellMapper} />
                 </Paper>
 
-
-
                 {customer &&
-                    <div>
+                    <Paper className={classes.root}>
                         <h1>Basic details</h1>
                         <Grid container spacing={3}>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
-                                    label="Magento User Id"
+                                    label="Magento Id"
                                     value={customer.magentoUserId}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
-                                    label="Account locked on date"
+                                    label={customer.lockedAccountAt ? "Account locked on" : "Account"}
                                     error={!!customer.lockedAccountAt}
-                                    value={customer.lockedAccountAt || "UNLOCKED"}
+                                    value={customer.lockedAccountAt || "Unlocked"}
                                     variant="outlined"
                                     InputProps={{
                                         readOnly: true,
@@ -231,25 +258,26 @@ export function CustomerInformation() {
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
-
                                     id='NumberofShares'
-                                    label='Number of Shares'
+                                    label='EFP-T Shares'
                                     variant="outlined"
                                     defaultValue={'  '}
                                     InputProps={{
+                                        readOnly: true,
                                         endAdornment: (
                                             <InputAdornment position='start' >
-                                                <Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
-                                                    {customer.numberOfShares}
-                                                </Link>
+                                                {customer.numberOfShares ?
+                                                    (<Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
+                                                        {customer.numberOfShares}
+                                                    </Link>) : "0"}
                                             </InputAdornment>
                                         ),
                                     }}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
                                     label="Referral Code"
                                     value={customer.referralCode || ''}
@@ -257,7 +285,7 @@ export function CustomerInformation() {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
                                     label="Number of Referrals"
                                     value={customer.numberOfReferrals || 0}
@@ -266,17 +294,17 @@ export function CustomerInformation() {
                                 />
                             </Grid>
 
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
-                                    label="Referral - Last 7 days position"
+                                    label="Referral 7 days position"
                                     value={customer.referralLastSevenDaysPosition || 'N/A'}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                                 <TextField
-                                    label="Referral - Overall position"
+                                    label="Referral Position"
                                     value={customer.referralOverallPosition || 'N/A'}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
@@ -308,7 +336,7 @@ export function CustomerInformation() {
                             rows={customer.discountCards}
                             classes={classes}
                             cellMapper={customerDataCellMapper} />
-                    </div>}
+                    </Paper>}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>

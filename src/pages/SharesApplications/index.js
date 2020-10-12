@@ -20,22 +20,37 @@ import MoneyOff from '@material-ui/icons/MoneyOff';
 
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
+const flex = {
+    display: 'flex',
+    alignItems: 'baseline',
+    justifyContent: 'space-evenly'
+}
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        padding: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+    },
+    search: {
+        padding: 0,
+        margin: theme.spacing(1),
+        alignItems: 'baseline',
+        color: theme.palette.primary,
+
+    },
     title: {
-        paddingLeft: 10,
+        paddingLeft: theme.spacing(1),
     },
     paper: {
-        padding: theme.spacing(2),
+        ...flex,
+        padding: theme.spacing(8),
         textAlign: 'center',
         color: theme.palette.text.secondary,
     },
-    search: {
-        // margin: 2000,
-        // textAlign: 'center',
-        color: theme.palette.primary,
-    },
 }));
+
+// https://codesandbox.io/s/k2kqwpvnn3?file=/src/App.js:423-761
 
 export function SharesApplications() {
     const intl = useIntl()
@@ -99,43 +114,44 @@ export function SharesApplications() {
             <Helmet>
                 <title>{intl.formatMessage({ id: 'sharesApplications' })}</title>
             </Helmet>
+
+
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                <Paper className={classes.paper}>
-                    <form noValidate autoComplete="off">
-                        <Grid container spacing={6}>
-                            <Grid item  >
-                                <div >
-                                    <h1 className={classes.search}>Search<Search /></h1>
-                                </div>
-                            </Grid>
-                            <Grid item >
-                                <TextField id="email"
-                                    label='Email address'
-                                    placeholder="gmail"
-                                    helperText="Partial substrings work too"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value || '')} />
-                            </Grid>
-                            <Grid item >
-                                <TextField id="magentoUserId"
-                                    placeholder="123456"
-                                    label="Magento User Id"
-                                    helperText="Magento User Id"
-                                    value={magentoUserId}
-                                    onChange={(event) => setMagentoUserId(event.target.value || '')} />
-                            </Grid>
-                            <Grid item >
-                                <TextField id="paymentReference"
-                                    placeholder="Ax1Gd424bc"
-                                    label="Pay Ref | Gift Code"
-                                    helperText="Payment Ref or Voucher Code"
-                                    value={paymentReference}
-                                    onChange={(event) => setPaymentReference(event.target.value || '')} />
-                            </Grid>
+                <form className={classes.root} noValidate autoComplete="off">
+                    <Grid container spacing={1}>
+                        <Grid item xs={12} sm={12} md={3}  >
+                            <h2 className={classes.search} >Search<Search /></h2>
+                        </Grid>
+                        <Grid item xs={12} sm={4} md={3}   >
+                            <TextField id="email"
+                                // label='Email address'
+                                placeholder="gmail"
+                                helperText="Email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value || '')} />
 
                         </Grid>
-                    </form>
-                </Paper>
+                        <Grid item xs={12} sm={4} md={3}  >
+                            <TextField id="magentoUserId"
+                                placeholder="123456"
+                                // label="Magento User Id"
+                                helperText="Magento User Id"
+                                value={magentoUserId}
+                                onChange={(event) => setMagentoUserId(event.target.value || '')} />
+
+                        </Grid>
+
+                        <Grid item xs={12} sm={4} md={3}   >
+                            <TextField id="paymentReference"
+                                placeholder="Ax1Gd424bc"
+                                // label=""
+                                helperText="Payment Ref/Voucher Code"
+                                value={paymentReference}
+                                onChange={(event) => setPaymentReference(event.target.value || '')} />
+
+                        </Grid>
+                    </Grid>
+                </form>
                 <Paper className={classes.root}>
                     <ArrayRenderer
                         title={intl.formatMessage({ id: 'sharesApplications' })}
@@ -145,7 +161,7 @@ export function SharesApplications() {
                         error={error && error.message}
                         cellMapper={getColumnContent} />
                 </Paper>
-            </Scrollbar>
+            </Scrollbar >
         </Page >
     )
 }
