@@ -15,11 +15,12 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
-
-
 import Typography from '@material-ui/core/Typography'
-
 import { useSnackbar } from 'notistack'
+
+
+const excelParsingOptions = { excelStrings: true }
+
 const StyledTableCell = withStyles((theme) => ({
     head: {
         backgroundColor: theme.palette.common.black,
@@ -49,9 +50,9 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
     return (
         <div key={title}>
             {/* <Typography variant="h2">{title}</Typography> */}
-            <h2>{title}</h2>
+            <h2 className={classes.title}>{title}</h2>
             {rows && rows.length &&
-                <CopyToClipboard text={new Parser().parse(rows)}
+                <CopyToClipboard text={new Parser(excelParsingOptions).parse(rows)}
                     onCopy={onCopy}>
                     <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
                 </CopyToClipboard>}
@@ -92,7 +93,7 @@ const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
     /*Non empty/null values are listed first */
     const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
     const title = pretiffyKey(name)
-    const text = new Parser({ fields }).parse(obj)
+    const text = new Parser({ fields, ...excelParsingOptions }).parse(obj)
     const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
     const startIcon = <CopyIcon />
 
@@ -100,7 +101,7 @@ const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
         return null
     }
     return (<div key={name} >
-        <h2>{title}</h2>
+        <h2 className={classes.title}>{title}</h2>
         <CopyToClipboard text={text}
             onCopy={onCopy} >
             <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
