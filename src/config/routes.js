@@ -9,7 +9,8 @@ const SignUp = lazy(() => import('../pages/SignUp/SignUp'))
 const About = lazy(() => import('../pages/About/About'))
 const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
 const SharesApplications = lazy(() => import('../pages/SharesApplications'))
-const CustomerInformation = lazy(() => import('../pages/CustomerInformation'))
+const Customer = lazy(() => import('../pages/Customers/customer'))
+const Customers = lazy(() => import('../pages/Customers/search'))
 const LockedAccounts = lazy(() => import('../pages/LockedAccounts'))
 const Rewards = lazy(() => import('../pages/Rewards'))
 
@@ -24,9 +25,9 @@ const routes = [
     <PrivateRoute path="/sharesApplications/email/:email" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/user/:magentoUserId" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/paymentReference/:paymentReference" exact component={SharesApplications} />,
-    <PrivateRoute path="/customers/:magentoUserId?" exact component={CustomerInformation} />,
-    <PrivateRoute path="/customers/:magentoUserId?/email/:email?" exact component={CustomerInformation} />,
-    <PrivateRoute path="/customers" exact component={CustomerInformation} />,
+    <PrivateRoute path="/customers/:magentoUserId?/email/:email?/referralCode/:referralCode?" exact component={Customers} />,
+    <PrivateRoute path="/customers" exact component={Customers} />,
+    <PrivateRoute path="/customer/:magentoUserId" exact component={Customer} />,
     <PrivateRoute path="/lockedAccounts" exact component={LockedAccounts} />,
     <PrivateRoute path="/rewards" exact component={Rewards} />,
 ]

@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
 import { useParams, Link } from 'react-router-dom';
-import queryString from 'query-string';
 
 import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -17,7 +16,6 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 import { ArrayRenderer } from 'components/Generic'
 import Paper from '@material-ui/core/Paper';
-import Search from '@material-ui/icons/Search';
 import { prettifyValue } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
@@ -56,53 +54,29 @@ const useStyles = makeStyles((theme) => ({
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
 export function CustomerInformation() {
-    const params = useParams();
+    const { magentoUserId } = useParams();
     const intl = useIntl()
     const classes = useStyles();
-    const [email, setEmail] = useState(params.email || '');
-    const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
-    const [selectedMagentoUserId, setSelectedMagentoUserId] = useState(params.magentoUserId || '');
-
     const [error, setError] = useState(null);
     useSessionTimeoutHandler(error)
 
     const [customer, setCustomer] = useState(null);
-    const [participants, setParticipants] = useState(null);
-    const helper = (error && error.message) || (!customer && 'No data') || '';
+    const helper = (error && error.message) || (!customer && 'Customer not found') || '';
 
     useEffect(() => {
         async function fetchCustomer() {
             const result = await efpApiClient.requestEfpApi(
-                `/customers/${selectedMagentoUserId}/all-information/BDIPA`)
+                `/customers/${magentoUserId}/all-information/BDIPA`)
                 .catch(setError);
             setCustomer(result);
         }
-        selectedMagentoUserId && fetchCustomer()
-        console.log("fetchAll -> selectedMagentoUserId", selectedMagentoUserId)
+        magentoUserId && fetchCustomer()
+        console.log("fetchAll -> magentoUserId", magentoUserId)
 
-    }, [selectedMagentoUserId])
+    }, [magentoUserId])
 
 
 
-    useEffect(() => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        async function search() {
-            const endpoint = queryString.stringifyUrl(
-                { url: '/customers/search', query: { email, magentoUserId, limit: 5 } },
-                { skipEmptyString: true, skipNull: true })
-
-            const result = await efpApiClient.requestEfpApi(endpoint, { signal })
-                .catch(e => e && !e.message.indexOf('aborted') && setError(e));
-            setParticipants(result);
-        }
-        (magentoUserId || (email && email.length > 3)) && search()
-        return function cleanup() {
-            console.log(`#### cancelling /customers/search?email=${email}&magentoUserId=${magentoUserId}`)
-            controller.abort()
-        }
-    }, [magentoUserId, email]);
 
     const onRefundClick = useCallback((paymentReference) => {
         console.log(paymentReference)
@@ -128,31 +102,12 @@ export function CustomerInformation() {
 
 
 
-
-    const participantsCellMapper = (row, key, classes) => {
-        switch (key) {
-            case 'Action':
-                return (<Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={() => setSelectedMagentoUserId(row.magentoUserId)}
-                >
-                    select
-                </Button>)
-            default:
-                return prettifyValue(row[key]);
-        }
-    }
-
-
-
     const customerDataCellMapper = (row, key, classes) => {
         switch (key) {
             case 'BuyerMagentoUserId':
-                return <Link to={`/customers/${row.BuyerMagentoUserId}`}>{row.BuyerMagentoUserId}</Link>;
+                return <Link to={`/customer/${row.BuyerMagentoUserId}`}>{row.BuyerMagentoUserId}</Link>;
             case 'RedeemUserId':
-                return <Link to={`/customers/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
+                return <Link to={`/customer/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
             case 'RefundDate':
                 return !row.RefundDate && !row.AllottedDate ?
                     <Button
@@ -173,54 +128,16 @@ export function CustomerInformation() {
         claimedReferralRewards: getColumnNames(customer, 'claimedReferralRewards'),
         referralLeagueEvents: getColumnNames(customer, 'referralLeagueEvents'),
         discountCards: getColumnNames(customer, 'discountCards'),
-        participants: participants && participants.length ? ['Action', ...Object.keys(participants[0])] : [],
     }
 
+    const title = intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })
+
     return (
-        <Page pageTitle={intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })}>
+        <Page pageTitle={title}>
             <Helmet>
-                <title>{intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })}</title>
+                <title>{title}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-
-
-
-                <form className={classes.root} noValidate autoComplete="off">
-                    <Grid container spacing={1}>
-                        <Grid item xs={12} sm={12} md={3}  >
-                            <h2 className={classes.search} >Search<Search /></h2>
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3}   >
-                            <TextField id="email"
-                                // label='Email address'
-                                placeholder="gmail"
-                                helperText="Email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value || '')} />
-
-                        </Grid>
-                        <Grid item xs={12} sm={4} md={3}  >
-                            <TextField id="magentoUserId"
-                                placeholder="123456"
-                                // label="Magento User Id"
-                                helperText="Magento User Id"
-                                value={magentoUserId}
-                                onChange={(event) => setMagentoUserId(event.target.value || '')} />
-
-                        </Grid>
-
-
-                    </Grid>
-                </form>
-
-                <Paper className={classes.root}>
-                    <ArrayRenderer title={participants && participants.length ? 'Customers' : ''}
-                        dense
-                        columnNames={columnNames.participants}
-                        rows={participants}
-                        classes={classes}
-                        cellMapper={participantsCellMapper} />
-                </Paper>
 
                 {customer &&
                     <Paper className={classes.root}>
@@ -262,24 +179,24 @@ export function CustomerInformation() {
                                     id='NumberofShares'
                                     label='EFP-T Shares'
                                     variant="outlined"
-                                    defaultValue={'  '}
+                                    value={customer.numberOfShares ? ' ' : '0'}
+                                    // defaultValue={' '}
                                     InputProps={{
                                         readOnly: true,
-                                        endAdornment: (
+                                        endAdornment: customer.numberOfShares ?
                                             <InputAdornment position='start' >
-                                                {customer.numberOfShares ?
-                                                    (<Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
-                                                        {customer.numberOfShares}
-                                                    </Link>) : "0"}
+                                                <Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
+                                                    {customer.numberOfShares}
+                                                </Link>
                                             </InputAdornment>
-                                        ),
+                                            : null,
                                     }}
                                 />
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
                                     label="Referral Code"
-                                    value={customer.referralCode || ''}
+                                    value={customer.referralCode || 'N/A'}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
                                 />
@@ -292,15 +209,6 @@ export function CustomerInformation() {
                                     variant="outlined"
                                 />
                             </Grid>
-
-                            <Grid item xs={4}>
-                                <TextField
-                                    label="Referral 7 days position"
-                                    value={customer.referralLastSevenDaysPosition || 'N/A'}
-                                    InputProps={{ readOnly: true, }}
-                                    variant="outlined"
-                                />
-                            </Grid>
                             <Grid item xs={4}>
                                 <TextField
                                     label="Referral Position"
@@ -309,6 +217,15 @@ export function CustomerInformation() {
                                     variant="outlined"
                                 />
                             </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Referral 7 days position"
+                                    value={customer.referralLastSevenDaysPosition || 'N/A'}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+
                         </Grid>
                         <ArrayRenderer title={'Purchased Vouchers'}
                             columnNames={columnNames.purchasedVouchers}

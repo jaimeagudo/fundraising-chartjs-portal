@@ -93,7 +93,7 @@ export function SharesApplications() {
     const getColumnContent = (row, key, classes) => {
         switch (key) {
             case 'MagentoUserId':
-                return <Link to={`/customers/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
+                return <Link to={`/customer/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button
