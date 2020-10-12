@@ -154,8 +154,7 @@ export function CustomerInformation() {
             case 'RedeemUserId':
                 return <Link to={`/customers/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
             case 'RefundDate':
-                return row.RefundDate ?
-                    row.RefundDate :
+                return !row.RefundDate && !row.AllottedDate ?
                     <Button
                         variant="contained"
                         color="secondary"
@@ -163,7 +162,7 @@ export function CustomerInformation() {
                         onClick={() => onRefundClick(row.Code)}
                         startIcon={<MoneyOff />}>
                         Refund
-                    </Button>
+                    </Button> : row.RefundDate || ''
             default:
                 return prettifyValue(row[key]);
         }
