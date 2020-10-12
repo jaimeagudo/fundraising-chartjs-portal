@@ -1,5 +1,3 @@
-import allLocales from './locales'
-// import allThemes from './themes'
 import React from 'react'
 import PollIcon from '@material-ui/icons/Poll'
 import InfoOutlined from '@material-ui/icons/InfoOutlined'
@@ -14,6 +12,8 @@ import RedeemIcon from '@material-ui/icons/Redeem';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
+
+import allLocales from './locales'
 import allThemes from './themes'
 
 const getMenuItems = (props) => {

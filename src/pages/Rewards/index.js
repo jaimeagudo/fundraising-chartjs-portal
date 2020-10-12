@@ -26,8 +26,8 @@ import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
 
 const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
+    title: {
+        paddingLeft: 10,
     },
 });
 

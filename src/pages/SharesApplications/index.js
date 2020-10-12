@@ -22,8 +22,8 @@ import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 
 const useStyles = makeStyles((theme) => ({
-    table: {
-        minWidth: 650,
+    title: {
+        paddingLeft: 10,
     },
     paper: {
         padding: theme.spacing(2),

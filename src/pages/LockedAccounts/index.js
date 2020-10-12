@@ -18,8 +18,8 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 
 const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
+    title: {
+        paddingLeft: 10,
     },
 });
 

@@ -5,6 +5,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
 
 import { makeStyles, withTheme } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -37,10 +38,14 @@ const renderPie = (array, labelKey, dataKey) => {
 
 
 const useStyles = makeStyles({
-    table: {
-        minWidth: 650,
+    title: {
+        paddingLeft: 10,
     },
+    root: {
+        flexGrow: 1
+    }
 });
+
 
 function CampaignStatus({ theme }) {
 
@@ -72,28 +77,38 @@ function CampaignStatus({ theme }) {
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 {status ?
-                    (<div>
-                        <div style={{ margin: 30 }}>
-                            <CountUp
-                                style={theme.typography.h2}
-                                separator=','
-                                prefix="£"
-                                start={0}
-                                end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
-                            />
-                            <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                        </div>
-                        <div style={{ margin: 30 }}>
-                            <CountUp
-                                style={theme.typography.h2}
-                                separator=','
-                                start={0}
-                                end={status && status.investorsCountTomorrow}
-                            />
-                            <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                        </div>
-                        <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
-                    </div>) : null
+                    (
+                        <div className={classes.root}>
+                            <Grid
+                                container
+                                direction="column"
+                                justify="right"
+                                alignItems="right"
+                                spacing={1}
+                            >
+                                <Grid item xs={12} spacing={1}>
+                                    <CountUp
+                                        style={theme.typography.h3}
+                                        separator=','
+                                        prefix="£"
+                                        start={0}
+                                        end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
+                                    />
+                                    <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
+                                </Grid>
+
+                                <Grid item xs={12} spacing={1}>
+                                    <CountUp
+                                        style={theme.typography.h3}
+                                        separator=','
+                                        start={0}
+                                        end={status && status.investorsCountTomorrow}
+                                    />
+                                    <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
+                                </Grid>
+                            </Grid>
+                            <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+                        </div>) : null
                 }
                 {stats ? renderObj(stats) : null}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>

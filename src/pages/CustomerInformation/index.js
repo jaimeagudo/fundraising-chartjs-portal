@@ -23,8 +23,8 @@ import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
 const styles = {
-    table: {
-        minWidth: 650,
+    title: {
+        paddingLeft: 10,
     },
 };
 
