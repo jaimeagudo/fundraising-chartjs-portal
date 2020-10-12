@@ -11,11 +11,12 @@ function pretiffyKey(name) {
 }
 
 // eslint-disable-next-line no-restricted-globals
-const prettifyValue = (field, withPences) => {
+const prettifyValue = (field, withPences, isGBP) => {
     switch (typeof field) {
         case 'number':
             // eslint-disable-next-line radix
-            return Number.parseFloat(withPences ? (field / 100) : field).toLocaleString(undefined, { maximumFractionDigits: 2 })
+            const formattedNum = Number.parseFloat(withPences ? (field / 100) : field).toLocaleString(undefined, { maximumFractionDigits: 2 })
+            return withPences || isGBP ? `£${formattedNum}` : formattedNum
         case 'string':
             try {
                 return (<Tooltip title={field}>

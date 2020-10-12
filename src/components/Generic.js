@@ -39,7 +39,10 @@ const StyledTableRow = withStyles((theme) => ({
     },
 }))(TableRow);
 
-const defaultCellMapper = (row, key, classes) => prettifyValue(row[key])
+
+const currencyRegexps = [/value/i, /investment/i]
+
+const defaultCellMapper = (row, key, classes) => prettifyValue(row[key], false, currencyRegexps.some(re => re.test(key)))
 
 const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null, showLength = false, stickyHeader = false }) => {
     const { enqueueSnackbar } = useSnackbar()
@@ -112,7 +115,7 @@ const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
                     {fields.map((key, i) =>
                         <StyledTableRow key={i}>
                             <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
-                            <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key))}</TableCell>
+                            <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key), currencyRegexps.some(re => re.test(key)))}</TableCell>
                         </StyledTableRow>
                     )}
                 </TableBody>
