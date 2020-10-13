@@ -16,7 +16,7 @@ const Rewards = lazy(() => import('../pages/Rewards'))
 
 const routes = [
     <Route path="/" redirectTo="/signin" exact component={SignIn} />,
-    <Route path="/about" exact component={About} />,
+    <Route path="/changelog" exact component={About} />,
     <PublicRoute path="/signin" redirectTo="/" exact component={SignIn} />,
     <PublicRoute path="/signup" redirectTo="/" exact component={SignUp} />,
     <PrivateRoute path="/home" exact component={CampaignStatus} />,
