@@ -124,9 +124,9 @@ const getMenuItems = (props) => {
         //   leftIcon: <ChatBubble />,
         // },
         {
-            value: '/about',
+            value: '/changelog',
             visible: true,
-            primaryText: intl.formatMessage({ id: 'about' }),
+            primaryText: intl.formatMessage({ id: 'changelog' }),
             leftIcon: <InfoOutlined />,
         },
         { divider: true },
