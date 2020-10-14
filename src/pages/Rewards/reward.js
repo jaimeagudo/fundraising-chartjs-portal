@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
+import { useParams, Link } from 'react-router-dom';
 
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -33,12 +34,14 @@ const useStyles = makeStyles({
 
 const NONE = -1;
 
-export function Benefits() {
+export function Reward() {
     const intl = useIntl()
     const classes = useStyles();
+    const { rewardId, rewardName } = useParams();
+    console.log("Reward -> title", rewardName)
+
     const [error, setError] = useState(null);
-    const [sharesRewards, setSharesRewards] = useState([]);
-    const [referralRewards, setReferralRewards] = useState([]);
+    const [rewardStock, setRewardStock] = useState([]);
     const [selectedRewardId, selectRewardId] = React.useState(NONE);
     const [selectedAmount, selectAmount] = React.useState(0);
     const { enqueueSnackbar } = useSnackbar()
@@ -55,14 +58,10 @@ export function Benefits() {
 
     const fetchRewards = useCallback(async () => {
         const resultS = await efpApiClient.requestEfpApi(
-            `/rewards/shares/BDIPA`)
+            `/rewards/${rewardId}/topUps`)
             .catch(setError);
-        setSharesRewards(resultS);
-        const resultR = await efpApiClient.requestEfpApi(
-            `/rewards/referrals/BDIPA`)
-            .catch(setError);
-        setReferralRewards(resultR);
-    }, []);
+        setRewardStock(resultS);
+    }, [rewardId]);
 
     useEffect(() => {
         fetchRewards()
@@ -102,29 +101,30 @@ export function Benefits() {
     }
 
 
-    const sharesRewardsColumns = sharesRewards && sharesRewards.length ? ['Action', ...Object.keys(sharesRewards[0])] : []
-    const referralRewardsColumns = referralRewards && referralRewards.length ? ['Action', ...Object.keys(referralRewards[0])] : []
+    const columns = rewardStock && rewardStock.length ? ['Action', ...Object.keys(rewardStock[0])] : []
 
-    const helper = !sharesRewards || !referralRewards || !referralRewards.length || !sharesRewards.length ? 'No data' : '';
+    const helper = !rewardStock || !rewardStock.length ? 'No data' : '';
+    const title = 'Reward Top ups'
 
-    const allRewards = (referralRewards || []).concat(sharesRewards || [])
+    // `${rewardName || 'Reward'} top ups`
+    // const title = `${rewardName || 'Reward'} top ups`
     return (
-        <Page pageTitle={intl.formatMessage({ id: 'investorsRewards' })}>
+        <Page pageTitle={title}>
             <Helmet>
-                <title>{intl.formatMessage({ id: 'investorsRewards' })}</title>
+                <title>{title}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {sharesRewards && <ArrayRenderer
-                    columnNames={sharesRewardsColumns}
-                    rows={sharesRewards}
-                    title={intl.formatMessage({ id: 'sharesRewards' })}
+                <Paper>
+
+                    <h3>Reward name</h3>
+                    <h4>{rewardName}</h4>
+                </Paper>
+                {rewardStock && <ArrayRenderer
+                    columnNames={columns}
+                    rows={rewardStock}
                     classes={classes}
                     cellMapper={cellMapper} />}
-                {referralRewards && <ArrayRenderer
-                    columnNames={referralRewardsColumns}
-                    rows={referralRewards}
-                    title={intl.formatMessage({ id: 'referralsRewards' })}
-                    classes={classes} cellMapper={cellMapper} />}
+
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>
@@ -133,7 +133,7 @@ export function Benefits() {
                 <DialogTitle id="form-dialog-title">{intl.formatMessage({ id: 'topUpStock' })}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {allRewards.find(r => r?.rewardId === selectedRewardId)?.title || ''}
+                        {rewardStock ? (rewardStock.find(r => r?.rewardId === selectedRewardId)?.title || '') : ''}
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -159,4 +159,4 @@ export function Benefits() {
         </Page >
     )
 }
-export default memo(Benefits);
+export default memo(Reward);
