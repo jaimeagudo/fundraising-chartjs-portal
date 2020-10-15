@@ -153,6 +153,14 @@ export function CustomerInformation() {
                             </Grid>
                             <Grid item xs={4}>
                                 <TextField
+                                    label="Magento Email"
+                                    value={customer.magentEmail}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
                                     label={customer.lockedAccountAt ? "Account locked on" : "Account"}
                                     error={!!customer.lockedAccountAt}
                                     value={customer.lockedAccountAt || "Unlocked"}
