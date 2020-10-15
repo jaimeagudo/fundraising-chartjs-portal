@@ -102,24 +102,18 @@ export function Reward() {
 
     const cellMapper = (row, key, classes) => {
         switch (key) {
-            case 'Action': return (
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={() => selectRewardId(row['rewardId'])}
-                    startIcon={<PlaylistAddIcon />}>
-                    {intl.formatMessage({ id: 'topUp' })}
-                </Button>)
-            default: return prettifyValue(row[key])
+            case 'customerId':
+                return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
+
+            default:
+                return prettifyValue(row[key])
         }
 
     }
+    const visibleSubSet = rewardStock.map(({ amount, customerId, createdAt }) => ({ amount, customerId, createdAt }))
 
-
-    const columns = rewardStock && rewardStock.length ? ['Action', ...Object.keys(rewardStock[0])] : []
-
-    const helper = !rewardStock || !rewardStock.length ? 'No data' : '';
+    const columns = visibleSubSet && visibleSubSet.length ? Object.keys(visibleSubSet[0]) : []
+    const helper = !visibleSubSet || !visibleSubSet.length ? 'No data' : '';
     const title = 'Reward Top ups'
 
     return (
@@ -131,35 +125,33 @@ export function Reward() {
                 <Paper>
                     <Grid
                         container
-                        direction="column"
-                        justify="right"
-                        alignItems="right"
-                        className={classes.status}
-                    >
-                        <Grid item xs={12} >
-
+                        spacing={2}
+                        className={classes.status} >
+                        <Grid item xs={8} >
                             <TextField
                                 label="Reward name"
                                 value={rewardName}
                                 InputProps={{ readOnly: true, }}
                                 variant="outlined"
-                                fullWidth
-                            />
-
-
-                            {/* <h3>Reward name</h3> */}
+                                fullWidth />
                         </Grid>
-
-                        <Grid item xs={12} >
-                            {/* <h4>{rewardName}</h4> */}
+                        <Grid item xs={4} >
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className={classes.button}
+                                onClick={() => selectRewardId(rewardId)}
+                                startIcon={<PlaylistAddIcon />}>
+                                {intl.formatMessage({ id: 'topUp' })}
+                            </Button>
 
                         </Grid>
                     </Grid>
 
                 </Paper>
-                {rewardStock && <ArrayRenderer
+                {visibleSubSet && <ArrayRenderer
                     columnNames={columns}
-                    rows={rewardStock}
+                    rows={visibleSubSet}
                     classes={classes}
                     cellMapper={cellMapper} />}
 
@@ -171,7 +163,7 @@ export function Reward() {
                 <DialogTitle id="form-dialog-title">{intl.formatMessage({ id: 'topUpStock' })}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {rewardStock ? (rewardStock.find(r => r?.rewardId === selectedRewardId)?.title || '') : ''}
+                        {visibleSubSet ? (visibleSubSet.find(r => r?.rewardId === selectedRewardId)?.title || '') : ''}
                     </DialogContentText>
                     <TextField
                         autoFocus
