@@ -11,6 +11,7 @@ import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import TextField from '@material-ui/core/TextField';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import Grid from '@material-ui/core/Grid';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -26,11 +27,26 @@ import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
 
-const useStyles = makeStyles({
+
+
+const useStyles = makeStyles((theme) => ({
+
     title: {
-        paddingLeft: 10,
+        paddingLeft: theme.spacing(1),
     },
-});
+    status: {
+        flexGrow: 1,
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(4),
+        color: theme.palette.text.secondary,
+    },
+}));
+
+
 
 const NONE = -1;
 
@@ -106,8 +122,6 @@ export function Reward() {
     const helper = !rewardStock || !rewardStock.length ? 'No data' : '';
     const title = 'Reward Top ups'
 
-    // `${rewardName || 'Reward'} top ups`
-    // const title = `${rewardName || 'Reward'} top ups`
     return (
         <Page pageTitle={title}>
             <Helmet>
@@ -115,9 +129,33 @@ export function Reward() {
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <Paper>
+                    <Grid
+                        container
+                        direction="column"
+                        justify="right"
+                        alignItems="right"
+                        className={classes.status}
+                    >
+                        <Grid item xs={12} >
 
-                    <h3>Reward name</h3>
-                    <h4>{rewardName}</h4>
+                            <TextField
+                                label="Reward name"
+                                value={rewardName}
+                                InputProps={{ readOnly: true, }}
+                                variant="outlined"
+                                fullWidth
+                            />
+
+
+                            {/* <h3>Reward name</h3> */}
+                        </Grid>
+
+                        <Grid item xs={12} >
+                            {/* <h4>{rewardName}</h4> */}
+
+                        </Grid>
+                    </Grid>
+
                 </Paper>
                 {rewardStock && <ArrayRenderer
                     columnNames={columns}

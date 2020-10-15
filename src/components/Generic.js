@@ -17,9 +17,10 @@ import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
 import Typography from '@material-ui/core/Typography'
 import { useSnackbar } from 'notistack'
+import { makeStyles, withTheme } from '@material-ui/core/styles';
 
-
-const excelParsingOptions = { excelStrings: true }
+const fixLineEnds = s => s.replace(/[\n]/gm, '\r\n')
+const excelParsingOptions = { excelStrings: true, }
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -40,6 +41,33 @@ const StyledTableRow = withStyles((theme) => ({
 }))(TableRow);
 
 
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+        padding: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+    },
+    search: {
+        padding: 0,
+        margin: theme.spacing(1),
+        alignItems: 'baseline',
+        color: theme.palette.primary,
+
+    },
+    title: {
+        paddingLeft: theme.spacing(1),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(4),
+        color: theme.palette.text.secondary,
+    },
+}));
+
+
+
+
 const currencyRegexps = [/value/i, /investment/i]
 
 const defaultCellMapper = (row, key, classes) => prettifyValue(row[key], false, currencyRegexps.some(re => re.test(key)))
@@ -50,16 +78,16 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
     const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
     const startIcon = <CopyIcon />
 
+    const genericClasses = useStyles()
     return (
-        <div key={title}>
+        <Paper className={genericClasses.paper} key={title}>
             {/* <Typography variant="h2">{title}</Typography> */}
             <h2 className={classes.title}>{title}</h2>
-            {rows && rows.length &&
-                <CopyToClipboard text={new Parser(excelParsingOptions).parse(rows)}
-                    onCopy={onCopy}>
+            {rows && rows.length ?
+                <CopyToClipboard text={fixLineEnds(new Parser(excelParsingOptions).parse(rows))} onCopy={onCopy}>
                     <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
-                </CopyToClipboard>}
-            <TableContainer component={Paper}>
+                </CopyToClipboard> : null}
+            <TableContainer >
                 <Table stickyHeader className={classes.table} aria-label="customized table">
                     {rows && rows.length ?
                         (<TableHead>
@@ -84,43 +112,48 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
             <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                 <FormHelperText>{helper}</FormHelperText>
             </FormControl>
-        </div >)
+        </Paper>)
 })
 
 
 const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
 
-
-
+    const genericClasses = useStyles()
     const { enqueueSnackbar } = useSnackbar()
     /*Non empty/null values are listed first */
     const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
     const title = pretiffyKey(name)
-    const text = new Parser({ fields, ...excelParsingOptions }).parse(obj)
-    const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
+    const text = fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj))
+
+    const onCopy = useCallback((clipboardData) => {
+        console.log("clipboardData", clipboardData)
+        enqueueSnackbar(`${title} copied`, { variant: 'success' })
+    }, [title, enqueueSnackbar])
+
     const startIcon = <CopyIcon />
 
     if (!obj) {
         return null
     }
-    return (<div key={name} >
-        <h2 className={classes.title}>{title}</h2>
-        <CopyToClipboard text={text}
-            onCopy={onCopy} >
-            <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
-        </CopyToClipboard>
-        <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-                <TableBody>
-                    {fields.map((key, i) =>
-                        <StyledTableRow key={i}>
-                            <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
-                            <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key), currencyRegexps.some(re => re.test(key)))}</TableCell>
-                        </StyledTableRow>
-                    )}
-                </TableBody>
-            </Table>
-        </TableContainer>
-    </div>)
+    return (
+        <Paper className={genericClasses.paper} key={title}>
+            <h2 className={classes.title}>{title}</h2>
+            <CopyToClipboard text={text} onCopy={onCopy} >
+                <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
+            </CopyToClipboard>
+            <TableContainer >
+                <Table className={classes.table} aria-label="simple table">
+                    <TableBody>
+                        {fields.map((key, i) =>
+                            <StyledTableRow key={i}>
+                                <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
+                                <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key), currencyRegexps.some(re => re.test(key)))}</TableCell>
+                            </StyledTableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Paper>)
+
 })
 export { ObjectRenderer, ArrayRenderer }
