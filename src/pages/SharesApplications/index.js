@@ -11,7 +11,6 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import Paper from '@material-ui/core/Paper';
 import Search from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -93,7 +92,7 @@ export function SharesApplications() {
     const getColumnContent = (row, key, classes) => {
         switch (key) {
             case 'MagentoUserId':
-                return <Link to={`/customer/${row.MagentoUserId}`}>{row.MagentoUserId}</Link>;
+                return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button
@@ -152,15 +151,15 @@ export function SharesApplications() {
                         </Grid>
                     </Grid>
                 </form>
-                <Paper className={classes.root}>
-                    <ArrayRenderer
-                        title={intl.formatMessage({ id: 'sharesApplications' })}
-                        rows={result}
-                        columnNames={columnNames}
-                        classes={classes}
-                        error={error && error.message}
-                        cellMapper={getColumnContent} />
-                </Paper>
+
+                <ArrayRenderer
+                    title={intl.formatMessage({ id: 'sharesApplications' })}
+                    rows={result}
+                    columnNames={columnNames}
+                    classes={classes}
+                    error={error && error.message}
+                    cellMapper={getColumnContent} />
+
             </Scrollbar >
         </Page >
     )

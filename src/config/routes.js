@@ -12,7 +12,8 @@ const SharesApplications = lazy(() => import('../pages/SharesApplications'))
 const Customer = lazy(() => import('../pages/Customers/customer'))
 const Customers = lazy(() => import('../pages/Customers/search'))
 const LockedAccounts = lazy(() => import('../pages/LockedAccounts'))
-const Rewards = lazy(() => import('../pages/Rewards'))
+const Rewards = lazy(() => import('../pages/Rewards/rewards'))
+const Reward = lazy(() => import('../pages/Rewards/reward'))
 
 const routes = [
     <Route path="/" redirectTo="/signin" exact component={SignIn} />,
@@ -30,6 +31,7 @@ const routes = [
     <PrivateRoute path="/customer/:magentoUserId" exact component={Customer} />,
     <PrivateRoute path="/lockedAccounts" exact component={LockedAccounts} />,
     <PrivateRoute path="/rewards" exact component={Rewards} />,
+    <PrivateRoute path="/rewards/:rewardId/:rewardName?" exact component={Reward} />,
 ]
 
 export default routes

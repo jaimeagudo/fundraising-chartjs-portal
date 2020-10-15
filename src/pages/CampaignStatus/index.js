@@ -37,14 +37,14 @@ const renderPie = (array, labelKey, dataKey) => {
 }
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     title: {
         paddingLeft: 10,
     },
-    root: {
-        flexGrow: 1
-    }
-});
+    status: {
+        padding: theme.spacing(1),
+    },
+}))
 
 
 function CampaignStatus({ theme }) {
@@ -75,18 +75,12 @@ function CampaignStatus({ theme }) {
             <Helmet>
                 <title>{intl.formatMessage({ id: 'campaignStatus' })}</title>
             </Helmet>
-            <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
+            <Scrollbar >
                 {status ?
-                    (
-                        <div className={classes.root}>
-                            <Grid
-                                container
-                                direction="column"
-                                justify="right"
-                                alignItems="right"
-                                spacing={1}
-                            >
-                                <Grid item xs={12} spacing={1}>
+                    (<div >
+                        <Grid container spacing={1} >
+                            <Grid item xs={12} spacing={1} >
+                                <div className={classes.status}>
                                     <CountUp
                                         style={theme.typography.h3}
                                         separator=','
@@ -94,22 +88,24 @@ function CampaignStatus({ theme }) {
                                         start={0}
                                         end={status && status.raisedAmountTomorrow && status.raisedAmountTomorrow / 100}
                                     />
-                                    <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                                </Grid>
-
-                                <Grid item xs={12} spacing={1}>
+                                    <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 8 }} />
+                                </div>
+                            </Grid>
+                            <Grid item xs={12} spacing={1}>
+                                <div className={classes.status}>
                                     <CountUp
                                         style={theme.typography.h3}
                                         separator=','
                                         start={0}
                                         end={status && status.investorsCountTomorrow}
                                     />
-                                    <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 16 }} />
-                                </Grid>
+                                    <Group color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 8, }} />
+                                </div>
                             </Grid>
-                            <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
-                        </div>) : null
-                }
+                        </Grid>
+                        <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+                    </div>) :
+                    null}
                 {stats ? renderObj(stats) : null}
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{(error && error.message) || ''}</FormHelperText>

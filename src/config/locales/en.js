@@ -35,7 +35,9 @@ const messages = defineMessages({
     topUp: 'Top up',
     cancel: 'Cancel',
     noDate: 'No data',
-    sessionTimeout: 'Session timed out, please sign in again'
+    sessionTimeout: 'Session timed out, please sign in again',
+    manageStock: 'Manage stock',
+    rewardTopUps: 'Reward Top Ups'
 })
 
 export default messages

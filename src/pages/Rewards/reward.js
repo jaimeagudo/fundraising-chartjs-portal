@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
+import { useParams, Link } from 'react-router-dom';
 
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
@@ -10,6 +11,7 @@ import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import TextField from '@material-ui/core/TextField';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
+import Grid from '@material-ui/core/Grid';
 
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
@@ -25,20 +27,37 @@ import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
 
-const useStyles = makeStyles({
+
+
+const useStyles = makeStyles((theme) => ({
+
     title: {
-        paddingLeft: 10,
+        paddingLeft: theme.spacing(1),
     },
-});
+    status: {
+        flexGrow: 1,
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(1),
+    },
+    paper: {
+        padding: theme.spacing(2),
+        marginBottom: theme.spacing(4),
+        color: theme.palette.text.secondary,
+    },
+}));
+
+
 
 const NONE = -1;
 
-export function Benefits() {
+export function Reward() {
     const intl = useIntl()
     const classes = useStyles();
+    const { rewardId, rewardName } = useParams();
+    console.log("Reward -> title", rewardName)
+
     const [error, setError] = useState(null);
-    const [sharesRewards, setSharesRewards] = useState([]);
-    const [referralRewards, setReferralRewards] = useState([]);
+    const [rewardStock, setRewardStock] = useState([]);
     const [selectedRewardId, selectRewardId] = React.useState(NONE);
     const [selectedAmount, selectAmount] = React.useState(0);
     const { enqueueSnackbar } = useSnackbar()
@@ -55,14 +74,10 @@ export function Benefits() {
 
     const fetchRewards = useCallback(async () => {
         const resultS = await efpApiClient.requestEfpApi(
-            `/rewards/shares/BDIPA`)
+            `/rewards/${rewardId}/topUps`)
             .catch(setError);
-        setSharesRewards(resultS);
-        const resultR = await efpApiClient.requestEfpApi(
-            `/rewards/referrals/BDIPA`)
-            .catch(setError);
-        setReferralRewards(resultR);
-    }, []);
+        setRewardStock(resultS);
+    }, [rewardId]);
 
     useEffect(() => {
         fetchRewards()
@@ -87,44 +102,59 @@ export function Benefits() {
 
     const cellMapper = (row, key, classes) => {
         switch (key) {
-            case 'Action': return (
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={() => selectRewardId(row['rewardId'])}
-                    startIcon={<PlaylistAddIcon />}>
-                    {intl.formatMessage({ id: 'topUp' })}
-                </Button>)
-            default: return prettifyValue(row[key])
+            case 'customerId':
+                return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
+
+            default:
+                return prettifyValue(row[key])
         }
 
     }
+    const visibleSubSet = rewardStock.map(({ amount, customerId, createdAt }) => ({ amount, customerId, createdAt }))
 
+    const columns = visibleSubSet && visibleSubSet.length ? Object.keys(visibleSubSet[0]) : []
+    const helper = !visibleSubSet || !visibleSubSet.length ? 'No data' : '';
+    const title = 'Reward Top ups'
 
-    const sharesRewardsColumns = sharesRewards && sharesRewards.length ? ['Action', ...Object.keys(sharesRewards[0])] : []
-    const referralRewardsColumns = referralRewards && referralRewards.length ? ['Action', ...Object.keys(referralRewards[0])] : []
-
-    const helper = !sharesRewards || !referralRewards || !referralRewards.length || !sharesRewards.length ? 'No data' : '';
-
-    const allRewards = (referralRewards || []).concat(sharesRewards || [])
     return (
-        <Page pageTitle={intl.formatMessage({ id: 'investorsRewards' })}>
+        <Page pageTitle={title}>
             <Helmet>
-                <title>{intl.formatMessage({ id: 'investorsRewards' })}</title>
+                <title>{title}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {sharesRewards && <ArrayRenderer
-                    columnNames={sharesRewardsColumns}
-                    rows={sharesRewards}
-                    title={intl.formatMessage({ id: 'sharesRewards' })}
+                <Paper>
+                    <Grid
+                        container
+                        spacing={2}
+                        className={classes.status} >
+                        <Grid item xs={8} >
+                            <TextField
+                                label="Reward name"
+                                value={rewardName}
+                                InputProps={{ readOnly: true, }}
+                                variant="outlined"
+                                fullWidth />
+                        </Grid>
+                        <Grid item xs={4} >
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                className={classes.button}
+                                onClick={() => selectRewardId(rewardId)}
+                                startIcon={<PlaylistAddIcon />}>
+                                {intl.formatMessage({ id: 'topUp' })}
+                            </Button>
+
+                        </Grid>
+                    </Grid>
+
+                </Paper>
+                {visibleSubSet && <ArrayRenderer
+                    columnNames={columns}
+                    rows={visibleSubSet}
                     classes={classes}
                     cellMapper={cellMapper} />}
-                {referralRewards && <ArrayRenderer
-                    columnNames={referralRewardsColumns}
-                    rows={referralRewards}
-                    title={intl.formatMessage({ id: 'referralsRewards' })}
-                    classes={classes} cellMapper={cellMapper} />}
+
                 <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                     <FormHelperText>{helper}</FormHelperText>
                 </FormControl>
@@ -133,7 +163,7 @@ export function Benefits() {
                 <DialogTitle id="form-dialog-title">{intl.formatMessage({ id: 'topUpStock' })}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        {allRewards.find(r => r?.rewardId === selectedRewardId)?.title || ''}
+                        {visibleSubSet ? (visibleSubSet.find(r => r?.rewardId === selectedRewardId)?.title || '') : ''}
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -159,4 +189,4 @@ export function Benefits() {
         </Page >
     )
 }
-export default memo(Benefits);
+export default memo(Reward);
