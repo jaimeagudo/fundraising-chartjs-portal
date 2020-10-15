@@ -79,12 +79,13 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
     const startIcon = <CopyIcon />
 
     const genericClasses = useStyles()
+    const text = useMemo(() => rows && rows.length ? fixLineEnds(new Parser(excelParsingOptions).parse(rows)) : '', [rows])
+
     return (
         <Paper className={genericClasses.paper} key={title}>
-            {/* <Typography variant="h2">{title}</Typography> */}
             <h2 className={classes.title}>{title}</h2>
             {rows && rows.length ?
-                <CopyToClipboard text={fixLineEnds(new Parser(excelParsingOptions).parse(rows))} onCopy={onCopy}>
+                <CopyToClipboard text={text} onCopy={onCopy}>
                     <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
                 </CopyToClipboard> : null}
             <TableContainer >
@@ -123,10 +124,10 @@ const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
     /*Non empty/null values are listed first */
     const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
     const title = pretiffyKey(name)
-    const text = fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj))
+    const text = useMemo(() => fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj)), [fields])
 
     const onCopy = useCallback((clipboardData) => {
-        console.log("clipboardData", clipboardData)
+        // console.log("clipboardData", clipboardData)
         enqueueSnackbar(`${title} copied`, { variant: 'success' })
     }, [title, enqueueSnackbar])
 
