@@ -2,11 +2,11 @@ import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
+import queryString from 'query-string';
+
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
 import { prettifyValue, fixedColors } from '../../utils'
-import Typography from '@material-ui/core/Typography'
-
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -61,20 +61,26 @@ export function SharesApplications() {
     const [email, setEmail] = useState(params.email || '');
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
     const [paymentReference, setPaymentReference] = useState(params.paymentReference || '');
+    const [applicationId, setApplicationId] = useState(params.applicationId || '');
     const [requestDate, setRequestDate] = useState(new Date());
     useSessionTimeoutHandler(error)
 
     useEffect(() => {
         let ignore = false;
         async function fetchData() {
-            const result = await efpApiClient.requestEfpApi(
-                `/sharesApplications/search?email=${email}&magentoUserId=${magentoUserId}&paymentReference=${paymentReference}`)
-                .catch(setError)
+            const endpoint = queryString.stringifyUrl(
+                {
+                    url: '/sharesApplications/search',
+                    query: { email, magentoUserId, paymentReference, applicationId }
+                },
+                { skipEmptyString: true, skipNull: true })
+
+            const result = await efpApiClient.requestEfpApi(endpoint).catch(setError)
             if (!ignore) setResult(result);
         }
         fetchData()
         return () => { ignore = true; }
-    }, [email, paymentReference, magentoUserId, requestDate]);
+    }, [email, paymentReference, magentoUserId, applicationId, requestDate]);
 
     const onRefundClick = useCallback((paymentReference) => {
         async function refundClick() {
@@ -113,15 +119,13 @@ export function SharesApplications() {
             <Helmet>
                 <title>{intl.formatMessage({ id: 'sharesApplications' })}</title>
             </Helmet>
-
-
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <form className={classes.root} noValidate autoComplete="off">
                     <Grid container spacing={1}>
-                        <Grid item xs={12} sm={12} md={3}  >
+                        <Grid item xs={12} md={2} >
                             <h2 className={classes.search} >Search<Search /></h2>
                         </Grid>
-                        <Grid item xs={12} sm={4} md={3}   >
+                        <Grid item xs={6} sm={6} md={2} lg={2}  >
                             <TextField id="email"
                                 // label='Email address'
                                 placeholder="gmail"
@@ -130,7 +134,7 @@ export function SharesApplications() {
                                 onChange={(event) => setEmail(event.target.value || '')} />
 
                         </Grid>
-                        <Grid item xs={12} sm={4} md={3}  >
+                        <Grid item xs={6} sm={6} md={2} lg={2} >
                             <TextField id="magentoUserId"
                                 placeholder="123456"
                                 // label="Magento User Id"
@@ -140,14 +144,21 @@ export function SharesApplications() {
 
                         </Grid>
 
-                        <Grid item xs={12} sm={4} md={3}   >
+                        <Grid item xs={6} sm={6} md={2} lg={2}  >
                             <TextField id="paymentReference"
                                 placeholder="Ax1Gd424bc"
                                 // label=""
                                 helperText="Payment Ref/Voucher Code"
                                 value={paymentReference}
                                 onChange={(event) => setPaymentReference(event.target.value || '')} />
-
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2}  >
+                            <TextField id="applicationId"
+                                placeholder="iJyjIUqWmh0o"
+                                // label=""
+                                helperText="ApplicationId"
+                                value={applicationId}
+                                onChange={(event) => setApplicationId(event.target.value || '')} />
                         </Grid>
                     </Grid>
                 </form>
