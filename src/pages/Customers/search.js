@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 import queryString from 'query-string';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -56,9 +56,10 @@ function CustomersSearch() {
     const classes = useStyles();
     const [email, setEmail] = useState(params.email || '');
     const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
-
+    const [referralCode, setReferralCode] = useState(params.referralCode || '');
     const [error, setError] = useState(null);
     useSessionTimeoutHandler(error)
+    const history = useHistory()
 
     const [participants, setParticipants] = useState(null);
     const helper = (error && error.message) || '';
@@ -69,19 +70,24 @@ function CustomersSearch() {
 
         async function search() {
             const endpoint = queryString.stringifyUrl(
-                { url: '/customers/search', query: { email, magentoUserId, limit: 20 } },
+                { url: '/customers/search', query: { email, magentoUserId, referralCode, limit: 20 } },
                 { skipEmptyString: true, skipNull: true })
 
             const result = await efpApiClient.requestEfpApi(endpoint, { signal })
                 .catch(e => e && !e.message.indexOf('aborted') && setError(e));
-            setParticipants(result);
+
+            if (params.referralCode && result && result.length === 1) {
+                history.push(`/customer/${result[0].magentoUserId}`)
+            } else {
+                setParticipants(result);
+            }
         }
-        (magentoUserId || (email && email.length > 3)) && search()
+        (referralCode || magentoUserId || (email && email.length > 3)) && search()
         return function cleanup() {
-            console.log(`#### cancelling /customers/search?email=${email}&magentoUserId=${magentoUserId}`)
+            // console.log(`#### cancelling /customers/search?email=${email}&magentoUserId=${magentoUserId}`)
             controller.abort()
         }
-    }, [magentoUserId, email]);
+    }, [magentoUserId, email, referralCode]);
 
     const participantsCellMapper = (row, key, classes) => {
         switch (key) {
@@ -122,6 +128,14 @@ function CustomersSearch() {
                                 value={magentoUserId}
                                 onChange={(event) => setMagentoUserId(event.target.value || '')} />
 
+                        </Grid>
+                        <Grid item xs={12} sm={4} md={3}  >
+                            <TextField id="referralCode"
+                                placeholder="R123456"
+                                // label="Magento User Id"
+                                helperText="Referral code"
+                                value={referralCode}
+                                onChange={(event) => setReferralCode(event.target.value || '')} />
                         </Grid>
                     </Grid>
                 </form>

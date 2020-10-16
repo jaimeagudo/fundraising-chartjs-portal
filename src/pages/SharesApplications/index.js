@@ -99,6 +99,8 @@ export function SharesApplications() {
         switch (key) {
             case 'MagentoUserId':
                 return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
+            case 'ReferralCode':
+                return <Link to={`/customers/referralCode/${row[key]}`}>{row[key]}</Link>;
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button
