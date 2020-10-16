@@ -5,6 +5,7 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import queryString from 'query-string';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -92,7 +93,7 @@ function CustomersSearch() {
     const participantsCellMapper = (row, key, classes) => {
         switch (key) {
             case 'magentoUserId':
-                return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
+                return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip></Link>;
             default:
                 return prettifyValue(row[key]);
         }

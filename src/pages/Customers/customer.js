@@ -4,6 +4,7 @@ import { useIntl } from 'react-intl'
 import { useParams, Link } from 'react-router-dom';
 
 import { makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -105,9 +106,9 @@ export function CustomerInformation() {
     const customerDataCellMapper = (row, key, classes) => {
         switch (key) {
             case 'BuyerMagentoUserId':
-                return <Link to={`/customer/${row.BuyerMagentoUserId}`}>{row.BuyerMagentoUserId}</Link>;
+                return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to buyer file'><p>{row[key]}</p></Tooltip></Link>;
             case 'RedeemUserId':
-                return <Link to={`/customer/${row.RedeemUserId}`}>{row.RedeemUserId}</Link>;
+                return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to redeemer file'><p>{row[key]}</p></Tooltip></Link>;
             case 'RefundDate':
                 return !row.RefundDate && !row.AllottedDate ?
                     <Button
@@ -194,7 +195,10 @@ export function CustomerInformation() {
                                         endAdornment: customer.numberOfShares ?
                                             <InputAdornment position='start' >
                                                 <Link to={`/sharesApplications/user/${customer.magentoUserId}`} color="inherit">
-                                                    {customer.numberOfShares}
+                                                    <Tooltip title='Go to share applications'><p>{customer.numberOfShares}</p></Tooltip>
+
+
+
                                                 </Link>
                                             </InputAdornment>
                                             : null,

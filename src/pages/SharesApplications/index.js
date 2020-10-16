@@ -16,6 +16,7 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MoneyOff from '@material-ui/icons/MoneyOff';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
@@ -98,9 +99,15 @@ export function SharesApplications() {
     const getColumnContent = (row, key, classes) => {
         switch (key) {
             case 'MagentoUserId':
-                return <Link to={`/customer/${row[key]}`}>{row[key]}</Link>;
+                return <Link to={`/customer/${row[key]}`}>
+                    <Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip>
+                </Link>;
             case 'ReferralCode':
-                return <Link to={`/customers/referralCode/${row[key]}`}>{row[key]}</Link>;
+                return (
+                    <Link to={`/customers/referralCode/${row[key]}`}>
+                        <Tooltip title='Go to referrer customer file'><p>{row[key]}</p></Tooltip>
+                    </Link>)
+
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button

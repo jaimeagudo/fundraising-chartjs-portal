@@ -15,6 +15,7 @@ import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Button from '@material-ui/core/Button';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 const useStyles = makeStyles({
@@ -71,7 +72,8 @@ export function LockedAccounts() {
 
     const lockedAccountsCellMapper = (row, key, classes) => {
         switch (key) {
-            case 'magentoUserId': return (<Link to={`/customers/${row.magentoUserId}`}>{row.magentoUserId}</Link>)
+            case 'magentoUserId':
+                return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip></Link>;
             case 'Action': return (<Button
                 variant="contained"
                 color="secondary"

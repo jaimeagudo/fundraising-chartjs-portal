@@ -9,10 +9,6 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-
-
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import { ArrayRenderer } from 'components/Generic'
 
 import { prettifyValue, } from '../../utils'
