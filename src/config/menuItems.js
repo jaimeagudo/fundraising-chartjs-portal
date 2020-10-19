@@ -9,6 +9,7 @@ import MenuOpenIcon from '@material-ui/icons/MenuOpen'
 import FindInPageIcon from '@material-ui/icons/FindInPage';
 import Group from '@material-ui/icons/Group';
 import RedeemIcon from '@material-ui/icons/Redeem';
+import Loyalty from '@material-ui/icons/Loyalty';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
@@ -82,12 +83,7 @@ const getMenuItems = (props) => {
             primaryText: intl.formatMessage({ id: 'campaignStatus' }),
             leftIcon: <PollIcon />,
         },
-        {
-            value: '/sharesApplications',
-            visible: isAuthorised,
-            primaryText: intl.formatMessage({ id: 'sharesApplications' }),
-            leftIcon: <FindInPageIcon />,
-        },
+
         {
             value: '/customers',
             visible: isAuthorised,
@@ -99,11 +95,24 @@ const getMenuItems = (props) => {
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'lockedAccounts' }),
             leftIcon: <LockIcon />,
-        }, {
+        },
+        {
+            value: '/sharesApplications',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'sharesApplications' }),
+            leftIcon: <FindInPageIcon />,
+        },
+        {
+            value: '/vouchers',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'vouchers' }),
+            leftIcon: <RedeemIcon />,
+        },
+        {
             value: '/rewards',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'investorsRewards' }),
-            leftIcon: <RedeemIcon />,
+            leftIcon: <Loyalty />,
         },
         // {
         //   value: '/dialog_demo',
