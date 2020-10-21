@@ -104,7 +104,6 @@ export function SharesApplications() {
                 </Link>;
             case 'PaymentReference':
                 const isVoucherCode = row[key].length === VOUCHERS_CODE_LENGTH
-
                 return isVoucherCode ? <Link to={`/vouchers/${row[key]}`}>
                     <Tooltip title='Go to voucher code details'><p>{row[key]}</p></Tooltip>
                 </Link> : prettifyValue(row[key]);
