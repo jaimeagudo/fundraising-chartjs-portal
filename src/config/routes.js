@@ -35,6 +35,7 @@ const routes = [
     <PrivateRoute path="/rewards" exact component={Rewards} />,
     <PrivateRoute path="/rewards/:rewardId/:rewardName?" exact component={Reward} />,
     <PrivateRoute path="/vouchers" exact component={Vouchers} />,
+    <PrivateRoute path="/vouchers/:code" exact component={Vouchers} />,
 ]
 
 export default routes

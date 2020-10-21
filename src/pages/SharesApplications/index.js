@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // https://codesandbox.io/s/k2kqwpvnn3?file=/src/App.js:423-761
-
+const VOUCHERS_CODE_LENGTH = 10
 export function SharesApplications() {
     const intl = useIntl()
     const classes = useStyles();
@@ -102,12 +102,18 @@ export function SharesApplications() {
                 return <Link to={`/customer/${row[key]}`}>
                     <Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip>
                 </Link>;
+            case 'PaymentReference':
+                const isVoucherCode = row[key].length === VOUCHERS_CODE_LENGTH
+
+                return isVoucherCode ? <Link to={`/vouchers/${row[key]}`}>
+                    <Tooltip title='Go to voucher code details'><p>{row[key]}</p></Tooltip>
+                </Link> : prettifyValue(row[key]);
+
             case 'ReferralCode':
                 return (
                     <Link to={`/customers/referralCode/${row[key]}`}>
                         <Tooltip title='Go to referrer customer file'><p>{row[key]}</p></Tooltip>
                     </Link>)
-
             case 'RefundedAt':
                 return row.RefundedAt ||
                     <Button

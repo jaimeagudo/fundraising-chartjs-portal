@@ -61,7 +61,7 @@ export function Vouchers() {
 
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
-    const [Code, setCode] = useState(params.code || 'yFYwITn0');
+    const [Code, setCode] = useState(params.code || '');
     const [RedeemUserId, setRedeemUserId] = useState(params.email || '');
     const [BuyerMagentoUserId, setBuyerMagentoUserId] = useState(params.BuyerMagentoUserId || '');
     const [PaymentReference, setPaymentReference] = useState(params.PaymentReference || '');
