@@ -15,7 +15,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
-import { ArrayRenderer } from 'components/Generic'
+import { ArrayRenderer, ObjectRenderer } from 'components/Generic'
 import Paper from '@material-ui/core/Paper';
 import { prettifyValue } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
@@ -52,6 +52,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
+const MAGENTO_GROUPS = { 1: "1 (DEFAULT)", 8: "8 (EFP)", 11: "11 (STAFF)" }
+
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
 export function CustomerInformation() {
@@ -62,6 +65,7 @@ export function CustomerInformation() {
     useSessionTimeoutHandler(error)
 
     const [customer, setCustomer] = useState(null);
+    const [customerMagento, setCustomerMagento] = useState(null);
     const helper = (error && error.message) || (!customer && 'Customer not found') || '';
 
     useEffect(() => {
@@ -71,7 +75,14 @@ export function CustomerInformation() {
                 .catch(setError);
             setCustomer(result);
         }
-        magentoUserId && fetchCustomer()
+
+        async function fetchMagentoCustomer() {
+            const result = await efpApiClient.requestEfpApi(
+                `/admin/customers/magento/${magentoUserId}`)
+                .catch(setError);
+            setCustomerMagento(result);
+        }
+        magentoUserId && fetchCustomer() && fetchMagentoCustomer()
         console.log("fetchAll -> magentoUserId", magentoUserId)
 
     }, [magentoUserId])
@@ -132,6 +143,8 @@ export function CustomerInformation() {
     }
 
     const title = intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })
+    const telephone = customerMagento && customerMagento.addresses && customerMagento.addresses.map(a => a.telephone).join("\n")
+    const customAttributes = customerMagento && customerMagento.custom_attributes && customerMagento.custom_attributes.reduce((acc, a) => ({ ...acc, [a.attribute_code]: a.value }), {})
 
     return (
         <Page pageTitle={title}>
@@ -142,20 +155,12 @@ export function CustomerInformation() {
 
                 {customer &&
                     <Paper className={classes.root}>
-                        <h1>Basic details</h1>
+                        <h1>EFP details</h1>
                         <Grid container spacing={3}>
                             <Grid item xs={4}>
                                 <TextField
                                     label="Magento Id"
                                     value={customer.magentoUserId}
-                                    InputProps={{ readOnly: true, }}
-                                    variant="outlined"
-                                />
-                            </Grid>
-                            <Grid item xs={4}>
-                                <TextField
-                                    label="Magento Email"
-                                    value={customer.magentEmail}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
                                 />
@@ -238,6 +243,61 @@ export function CustomerInformation() {
                                 />
                             </Grid>
 
+                        </Grid>
+                        <h1>Magento details</h1>
+                        <Grid container spacing={3}>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="First name"
+                                    value={customerMagento.firstname}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Last name"
+                                    value={customerMagento.lastname}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Email"
+                                    InputProps={{
+                                        readOnly: true,
+                                        startAdornment: <a href={`mailto:${customerMagento.email}`}>{customerMagento.email} </a>
+                                    }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Date of birth"
+                                    value={customerMagento.dob}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Group"
+                                    value={MAGENTO_GROUPS[customerMagento.group_id] || customerMagento.group_id}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Telephone"
+                                    value={telephone}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <ObjectRenderer key={'magento'} name={'Custom Magento attributes'} obj={customAttributes} classes={classes} />
                         </Grid>
                         <ArrayRenderer title={'Purchased Vouchers'}
                             columnNames={columnNames.purchasedVouchers}

@@ -51,18 +51,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // https://codesandbox.io/s/k2kqwpvnn3?file=/src/App.js:423-761
-const VOUCHERS_CODE_LENGTH = 10
-export function SharesApplications() {
+
+const IPOCODE = 'BDIPA'
+
+export function Vouchers() {
     const intl = useIntl()
     const classes = useStyles();
     const params = useParams();
 
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
-    const [email, setEmail] = useState(params.email || '');
-    const [magentoUserId, setMagentoUserId] = useState(params.magentoUserId || '');
-    const [paymentReference, setPaymentReference] = useState(params.paymentReference || '');
-    const [applicationId, setApplicationId] = useState(params.applicationId || '');
+    const [Code, setCode] = useState(params.code || '');
+    const [RedeemUserId, setRedeemUserId] = useState(params.email || '');
+    const [BuyerMagentoUserId, setBuyerMagentoUserId] = useState(params.BuyerMagentoUserId || '');
+    const [PaymentReference, setPaymentReference] = useState(params.PaymentReference || '');
     const [requestDate, setRequestDate] = useState(new Date());
     useSessionTimeoutHandler(error)
 
@@ -71,8 +73,8 @@ export function SharesApplications() {
         async function fetchData() {
             const endpoint = queryString.stringifyUrl(
                 {
-                    url: '/sharesApplications/search',
-                    query: { email, magentoUserId, paymentReference, applicationId }
+                    url: `/admin/vouchers/${IPOCODE}/search`,
+                    query: { Code, RedeemUserId, BuyerMagentoUserId, PaymentReference, limit: 10 }
                 },
                 { skipEmptyString: true, skipNull: true })
 
@@ -81,57 +83,54 @@ export function SharesApplications() {
         }
         fetchData()
         return () => { ignore = true; }
-    }, [email, paymentReference, magentoUserId, applicationId, requestDate]);
+    }, [Code, RedeemUserId, PaymentReference, BuyerMagentoUserId, requestDate]);
 
-    const onRefundClick = useCallback((paymentReference) => {
-        async function refundClick() {
-            await efpApiClient.requestEfpApi(
-                `/admin/sharesApplications/${paymentReference}/refund`,
-                { method: 'POST', })
-                .catch(setError);
-            setRequestDate(new Date());
-        }
-        refundClick()
-    }, []);
+    // const onRefundClick = useCallback((PaymentReference) => {
+    //     async function refundClick() {
+    //         await efpApiClient.requestEfpApi(
+    //             `/admin/vouchers/${PaymentReference}/refund`,
+    //             { method: 'POST', })
+    //             .catch(setError);
+    //         setRequestDate(new Date());
+    //     }
+    //     refundClick()
+    // }, []);
 
-    const columnNames = result && result.length ? Object.keys(result[0]) : []
+    const columnNames = result && result.length ? ['Action', ...Object.keys(result[0])] : []
 
     const getColumnContent = (row, key, classes) => {
         switch (key) {
-            case 'MagentoUserId':
+            case 'BuyerMagentoUserId':
                 return <Link to={`/customer/${row[key]}`}>
-                    <Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip>
+                    <Tooltip title='Go to buyer customer file'><p>{row[key]}</p></Tooltip>
                 </Link>;
-            case 'PaymentReference':
-                const isVoucherCode = row[key].length === VOUCHERS_CODE_LENGTH
-                return isVoucherCode ? <Link to={`/vouchers/${row[key]}`}>
-                    <Tooltip title='Go to voucher code details'><p>{row[key]}</p></Tooltip>
-                </Link> : prettifyValue(row[key]);
-
-            case 'ReferralCode':
-                return (
-                    <Link to={`/customers/referralCode/${row[key]}`}>
-                        <Tooltip title='Go to referrer customer file'><p>{row[key]}</p></Tooltip>
-                    </Link>)
-            case 'RefundedAt':
-                return row.RefundedAt ||
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        className={classes.button}
-                        onClick={() => onRefundClick(row.PaymentReference)}
-                        startIcon={<MoneyOff />}>
-                        Refund
-                    </Button>
+            case 'RedeemUserId':
+                return <Link to={`/customer/${row[key]}`}>
+                    <Tooltip title='Go to redeemer customer file'><p>{row[key]}</p></Tooltip>
+                </Link>;
+            case 'Action':
+                return row.RedeemUserId ? <Link to={`/sharesApplications/paymentReference/${row.Code}`}>
+                    <Tooltip title='Go to redeemer customer file'><p>Go to application</p></Tooltip>
+                </Link> : ''
+            // case 'RefundDate':
+            //     return row.RefundDate ||
+            //         <Button
+            //             variant="contained"
+            //             color="secondary"
+            //             className={classes.button}
+            //             onClick={() => onRefundClick(row.PaymentReference)}
+            //             startIcon={<MoneyOff />}>
+            //             Refund
+            //         </Button>
             default:
                 return prettifyValue(row[key]);
         }
     }
 
     return (
-        <Page pageTitle={intl.formatMessage({ id: 'sharesApplications' })}>
+        <Page pageTitle={intl.formatMessage({ id: 'vouchers' })}>
             <Helmet>
-                <title>{intl.formatMessage({ id: 'sharesApplications' })}</title>
+                <title>{intl.formatMessage({ id: 'vouchers' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <form className={classes.root} noValidate autoComplete="off">
@@ -140,45 +139,44 @@ export function SharesApplications() {
                             <h2 className={classes.search} >Search<Search /></h2>
                         </Grid>
                         <Grid item xs={6} sm={6} md={2} lg={2}  >
-                            <TextField id="email"
+                            <TextField id="Voucher Code"
                                 // label='Email address'
-                                placeholder="gmail"
-                                helperText="Email"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value || '')} />
+                                placeholder="Ax1Gd424bc"
+                                helperText="Voucher Code"
+                                value={Code}
+                                onChange={(event) => setCode(event.target.value || '')} />
+
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2}  >
+                            <TextField id="PaymentReference"
+                                placeholder="159976854530000"
+                                // label=""
+                                helperText="Payment Ref"
+                                value={PaymentReference}
+                                onChange={(event) => setPaymentReference(event.target.value || '')} />
+                        </Grid>
+                        <Grid item xs={6} sm={6} md={2} lg={2}  >
+                            <TextField id="RedeemUserId"
+                                // label='Email address'
+                                placeholder="1234"
+                                helperText="Redeemer UserId"
+                                value={RedeemUserId}
+                                onChange={(event) => setRedeemUserId(event.target.value || '')} />
 
                         </Grid>
                         <Grid item xs={6} sm={6} md={2} lg={2} >
                             <TextField id="magentoUserId"
-                                placeholder="123456"
+                                placeholder="5678"
                                 // label="Magento User Id"
-                                helperText="Magento User Id"
-                                value={magentoUserId}
-                                onChange={(event) => setMagentoUserId(event.target.value || '')} />
-
-                        </Grid>
-
-                        <Grid item xs={6} sm={6} md={2} lg={2}  >
-                            <TextField id="paymentReference"
-                                placeholder="Ax1Gd424bc"
-                                // label=""
-                                helperText="Payment Ref/Voucher Code"
-                                value={paymentReference}
-                                onChange={(event) => setPaymentReference(event.target.value || '')} />
-                        </Grid>
-                        <Grid item xs={6} sm={6} md={2} lg={2}  >
-                            <TextField id="applicationId"
-                                placeholder="iJyjIUqWmh0o"
-                                // label=""
-                                helperText="ApplicationId"
-                                value={applicationId}
-                                onChange={(event) => setApplicationId(event.target.value || '')} />
+                                helperText="Buyer User Id"
+                                value={BuyerMagentoUserId}
+                                onChange={(event) => setBuyerMagentoUserId(event.target.value || '')} />
                         </Grid>
                     </Grid>
                 </form>
 
                 <ArrayRenderer
-                    title={intl.formatMessage({ id: 'sharesApplications' })}
+                    title={intl.formatMessage({ id: 'vouchers' })}
                     rows={result}
                     columnNames={columnNames}
                     classes={classes}
@@ -189,4 +187,4 @@ export function SharesApplications() {
         </Page >
     )
 }
-export default memo(SharesApplications);
+export default memo(Vouchers);

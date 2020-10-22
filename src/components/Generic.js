@@ -117,14 +117,14 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
 })
 
 
-const ObjectRenderer = memo(({ obj, classes, fieldsWithPences, name }) => {
+const ObjectRenderer = memo(({ obj, classes, fieldsWithPences = [], name }) => {
 
     const genericClasses = useStyles()
     const { enqueueSnackbar } = useSnackbar()
     /*Non empty/null values are listed first */
     const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
     const title = pretiffyKey(name)
-    const text = useMemo(() => fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj)), [fields])
+    const text = useMemo(() => fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj)), [obj, fields])
 
     const onCopy = useCallback((clipboardData) => {
         // console.log("clipboardData", clipboardData)
