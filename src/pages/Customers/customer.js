@@ -312,8 +312,68 @@ export function CustomerInformation() {
                                     variant="outlined"
                                 />
                             </Grid>
-                            <ObjectRenderer key={'magento'} name={'Custom Magento attributes'} obj={customAttributes} classes={classes} />
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="DF"
+                                    value={customAttributes.df || 'N/A'}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="EFP Discount"
+                                    value={customAttributes.efp_discount || 'N/A'}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Reward update notification"
+                                    value={customAttributes.reward_update_notification = '1' ? true : false}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Free subscription"
+                                    value={customAttributes.free_subscription = '1' ? true : false}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Has changed dob once"
+                                    value={customAttributes.has_changed_dob_once = '1' ? true : false}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Total numbers of shares UK"
+                                    value={parseInt(customAttributes.total_numbers_of_shares_uk) || 0}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+                            <Grid item xs={4}>
+                                <TextField
+                                    label="Referrals count"
+                                    value={parseInt(customAttributes.referrals_count) || 0}
+                                    InputProps={{ readOnly: true, }}
+                                    variant="outlined"
+                                />
+                            </Grid>
+
+
+
                         </Grid>}
+
+
                         <ArrayRenderer title={'Purchased Vouchers'}
                             columnNames={columnNames.purchasedVouchers}
                             rows={customer.purchasedVouchers}
