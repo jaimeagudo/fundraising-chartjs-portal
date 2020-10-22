@@ -66,7 +66,7 @@ function CampaignStatus({ theme }) {
     const renderObj = (obj) => Object.keys(obj).map((key, index) =>
         Array.isArray(obj[key]) && obj[key].length ?
             <ArrayRenderer key={index} title={pretiffyKey(key)} rows={obj[key]} columnNames={Object.keys(obj[key][0])} classes={classes} /> :
-            <ObjectRenderer key={index} name={key} obj={obj[key]} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+            <ObjectRenderer key={index} name={key} obj={obj[key]} classes={classes} />
     )
 
 
@@ -103,7 +103,7 @@ function CampaignStatus({ theme }) {
                                 </div>
                             </Grid>
                         </Grid>
-                        <ObjectRenderer key='status' name={'Status'} obj={status} fieldsWithPences={api.fieldsWithPences} classes={classes} />
+                        <ObjectRenderer key='status' name={'Status'} obj={status} classes={classes} />
                     </div>) :
                     null}
                 {stats ? renderObj(stats) : null}

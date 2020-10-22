@@ -1,6 +1,6 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
-import { format, parseISO, formatDistanceToNow, formatDistanceStrict, differenceInDays } from 'date-fns'
+import { format, lightFormat, parseISO, formatDistanceToNow, formatDistanceStrict, differenceInDays } from 'date-fns'
 const DATE_FORMAT_STRING = 'yyyy-MM-dd'
 
 
@@ -8,6 +8,34 @@ const capitalize = (word) => word.charAt(0).toUpperCase() + word.substring(1);
 function pretiffyKey(name) {
     const words = name.match(/[A-Za-z0-9][a-z]*/g) || [];
     return words.map(capitalize).join(" ");
+}
+
+
+const daysFormattedDates = ['startDate', 'endDate']
+const fieldsWithPences = ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences']
+const currencyRegexps = [/value/i, /investment/i]
+
+
+
+const prettifyKV = (key, value, options = {}) => {
+    // const { withPences, isGBP } = options;
+
+    if (daysFormattedDates.includes(key)) {
+        const date = parseISO(value)
+        const dateInWords = formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true })
+        return (
+            <Tooltip title={String(date)}>
+                <p>{dateInWords}</p>
+            </Tooltip>)
+    }
+
+    const isGBP = currencyRegexps.some(re => re.test(key))
+    const withPences = fieldsWithPences.includes(key)
+    return prettifyValue(value, withPences, isGBP)
+
+
+
+    //    return prettifyValue(value, withPences, isGBP)
 }
 
 // eslint-disable-next-line no-restricted-globals
@@ -20,12 +48,14 @@ const prettifyValue = (value, withPences, isGBP) => {
         case 'string':
             try {
                 const date = parseISO(value)
-                const now = new Date()
-                const dateInWords = Math.abs(differenceInDays(date, now)) >= 28 ?
-                    formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true }) :
-                    formatDistanceToNow(parseISO(value), { addSuffix: true })
+                // const now = new Date()
+                // const daysDiff = Math.abs(differenceInDays(date, now)) >= 28
+                //                 const dateInWords =  daysDiff >= 28 ?
+                //                     formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true }) :
+                // formatDistanceToNow(parseISO(value), { addSuffix: true })
+                const dateInWords = formatDistanceToNow(parseISO(value), { addSuffix: true })
                 return (
-                    <Tooltip title={value}>
+                    <Tooltip title={String(date)}>
                         <p>{dateInWords}</p>
                     </Tooltip>)
             } catch (e) {
@@ -68,5 +98,4 @@ const rndColor = () => "#" + ("000000" + Math.floor(Math.random() * 16777216).to
 const rndColors = (length) => Array.from({ length }, rndColor)
 
 
-
-export { rndColors, fixedColors, rainbow, prettifyValue, pretiffyKey, capitalize }
+export { rndColors, fixedColors, rainbow, prettifyValue, pretiffyKey, prettifyKV, capitalize }

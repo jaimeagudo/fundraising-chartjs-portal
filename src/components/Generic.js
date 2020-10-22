@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, memo } from 'react';
 import { Parser } from 'json2csv';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { pretiffyKey, prettifyValue } from '../utils'
+import { pretiffyKey, prettifyKV, prettifyValue } from '../utils'
 
 import { withStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -65,12 +65,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-
-
-const currencyRegexps = [/value/i, /investment/i]
-
-const defaultCellMapper = (row, key, classes) => prettifyValue(row[key], false, currencyRegexps.some(re => re.test(key)))
+const defaultCellMapper = (row, key, classes) => prettifyKV(key, row[key])
 
 const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null, showLength = false, stickyHeader = false }) => {
     const { enqueueSnackbar } = useSnackbar()
@@ -117,7 +112,7 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
 })
 
 
-const ObjectRenderer = memo(({ obj, classes, fieldsWithPences = [], name }) => {
+const ObjectRenderer = memo(({ obj, classes, name }) => {
 
     const genericClasses = useStyles()
     const { enqueueSnackbar } = useSnackbar()
@@ -148,7 +143,7 @@ const ObjectRenderer = memo(({ obj, classes, fieldsWithPences = [], name }) => {
                         {fields.map((key, i) =>
                             <StyledTableRow key={i}>
                                 <TableCell component="th" scope="row" ><b>{pretiffyKey(key)}</b></TableCell>
-                                <TableCell align="right">{prettifyValue(obj[key], fieldsWithPences.includes(key), currencyRegexps.some(re => re.test(key)))}</TableCell>
+                                <TableCell align="right">{prettifyKV(key, obj[key])}</TableCell>
                             </StyledTableRow>
                         )}
                     </TableBody>
