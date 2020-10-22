@@ -157,7 +157,8 @@ export function CustomerInformation() {
     }
 
     const title = intl.formatMessage({ id: 'customerInformation' }, { magentoUserId })
-    const telephone = customerMagento && customerMagento.addresses && customerMagento.addresses.map(a => a.telephone).join("\n")
+    const telephones = (customerMagento && customerMagento.addresses && customerMagento.addresses.map(a => a.telephone)) || []
+    const uniqueTelephones = Array.from(new Set(telephones)).join(", \n")
     const customAttributes = customerMagento && customerMagento.custom_attributes && customerMagento.custom_attributes.reduce((acc, a) => ({ ...acc, [a.attribute_code]: a.value }), {})
 
     return (
@@ -305,8 +306,8 @@ export function CustomerInformation() {
 
                             <Grid item xs={4}>
                                 <TextField
-                                    label="Telephone"
-                                    value={telephone}
+                                    label="Telephone/s"
+                                    value={uniqueTelephones}
                                     InputProps={{ readOnly: true, }}
                                     variant="outlined"
                                 />
