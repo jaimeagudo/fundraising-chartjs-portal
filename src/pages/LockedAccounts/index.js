@@ -22,6 +22,10 @@ const useStyles = makeStyles({
     title: {
         paddingLeft: 10,
     },
+    p: {
+        padding: 10,
+        margin: 10
+    }
 });
 
 export function LockedAccounts() {
@@ -92,17 +96,19 @@ export function LockedAccounts() {
                 <title>{intl.formatMessage({ id: 'lockedAccounts' })}</title>
             </Helmet>
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
-                {result && result.length && <Button
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    style={{ float: 'right' }}
-                    onClick={onUnlockAllClick}
-                    startIcon={<LockOpenIcon />}
-                >Unlock All
+                <p className={classes.p}>{intl.formatMessage({ id: 'lockedCustomerExplanation' })}
+                    {result && result.length && <Button
+                        className={classes.p}
+                        variant="contained"
+                        color="secondary"
+                        className={classes.button}
+                        style={{ float: 'right' }}
+                        onClick={onUnlockAllClick}
+                        startIcon={<LockOpenIcon />}
+                    >Unlock All
                     </Button>}
+                </p>
                 <ArrayRenderer
-                    title={intl.formatMessage({ id: 'lockedAccounts' })}
                     rows={result}
                     columnNames={lockedAccountsColumnNames}
                     classes={classes}

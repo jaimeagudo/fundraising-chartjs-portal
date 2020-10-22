@@ -13,6 +13,7 @@ import Loyalty from '@material-ui/icons/Loyalty';
 import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
+import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 
 import allLocales from './locales'
 import allThemes from './themes'
@@ -94,7 +95,7 @@ const getMenuItems = (props) => {
             value: '/lockedAccounts',
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'lockedAccounts' }),
-            leftIcon: <LockIcon />,
+            leftIcon: <PersonAddDisabledIcon />,
         },
         {
             value: '/sharesApplications',
