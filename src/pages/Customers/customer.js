@@ -53,7 +53,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const MAGENTO_GROUPS = { 1: "1 (DEFAULT)", 8: "8 (EFP)", 11: "11 (STAFF)" }
+const MAGENTO_GROUPS = {
+    0: "0 (NOT LOGGED IN)",
+    1: "1 (General)",
+    2: "2 (Wholesale)",
+    3: "3 (Retailer)",
+    8: "8 (EFP)",
+    11: "11 (Staff)",
+    23: "23 (Trade/POS)",
+    27: "27 (Sales Activists)",
+    31: "31 (EFP 6 - Free Shipping)",
+}
 
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
@@ -245,7 +255,7 @@ export function CustomerInformation() {
 
                         </Grid>
                         <h1>Magento details</h1>
-                        <Grid container spacing={3}>
+                        {customerMagento && <Grid container spacing={3}>
                             <Grid item xs={4}>
                                 <TextField
                                     label="First name"
@@ -298,7 +308,7 @@ export function CustomerInformation() {
                                 />
                             </Grid>
                             <ObjectRenderer key={'magento'} name={'Custom Magento attributes'} obj={customAttributes} classes={classes} />
-                        </Grid>
+                        </Grid>}
                         <ArrayRenderer title={'Purchased Vouchers'}
                             columnNames={columnNames.purchasedVouchers}
                             rows={customer.purchasedVouchers}
