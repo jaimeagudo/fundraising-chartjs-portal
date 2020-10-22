@@ -1,5 +1,7 @@
 import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
+import { Link } from 'react-router-dom';
+
 import { format, lightFormat, parseISO, formatDistanceToNow, formatDistanceStrict, differenceInDays } from 'date-fns'
 const DATE_FORMAT_STRING = 'yyyy-MM-dd'
 
@@ -12,30 +14,34 @@ function pretiffyKey(name) {
 
 
 const daysFormattedDates = ['startDate', 'endDate']
-const fieldsWithPences = ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences']
-const currencyRegexps = [/value/i, /investment/i]
+const fieldsWithPences = ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences', 'AmountWithPences']
+const currencyRegexps = [/value/i, /averageInvestment/i, /biggestInvestmentValue/i]
 
+
+const customerIdRegexps = [/magentoUserId/i, /BuyerMagentoUserId/i, /RedeemUserId/i]
 
 
 const prettifyKV = (key, value, options = {}) => {
-    // const { withPences, isGBP } = options;
 
     if (daysFormattedDates.includes(key)) {
         const date = parseISO(value)
         const dateInWords = formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true })
+        const title = String(date)
         return (
-            <Tooltip title={String(date)}>
+            <Tooltip title={title}>
                 <p>{dateInWords}</p>
             </Tooltip>)
+    }
+
+    const isCustomerId = customerIdRegexps.some(re => re.test(key))
+    if (isCustomerId) {
+        return <Link to={`/customer/${value} `}><Tooltip title={`Go to ${key} file`}><p>{value}</p></Tooltip></Link>;
     }
 
     const isGBP = currencyRegexps.some(re => re.test(key))
     const withPences = fieldsWithPences.includes(key)
     return prettifyValue(value, withPences, isGBP)
 
-
-
-    //    return prettifyValue(value, withPences, isGBP)
 }
 
 // eslint-disable-next-line no-restricted-globals
@@ -44,26 +50,23 @@ const prettifyValue = (value, withPences, isGBP) => {
         case 'number':
             // eslint-disable-next-line radix
             const formattedNum = Number.parseFloat(withPences ? (value / 100) : value).toLocaleString(undefined, { maximumFractionDigits: 2 })
-            return withPences || isGBP ? `£${formattedNum}` : formattedNum
+            return withPences || isGBP ? `£${formattedNum} ` : formattedNum
         case 'string':
             try {
                 const date = parseISO(value)
-                // const now = new Date()
-                // const daysDiff = Math.abs(differenceInDays(date, now)) >= 28
-                //                 const dateInWords =  daysDiff >= 28 ?
-                //                     formatDistanceStrict(date, new Date(), { unit: 'day', addSuffix: true }) :
-                // formatDistanceToNow(parseISO(value), { addSuffix: true })
                 const dateInWords = formatDistanceToNow(parseISO(value), { addSuffix: true })
+                const title = String(date)
                 return (
-                    <Tooltip title={String(date)}>
+                    <Tooltip title={title}>
                         <p>{dateInWords}</p>
                     </Tooltip>)
             } catch (e) {
                 return value !== null && value !== undefined && value !== 'null' ? value : '';
             }
-        case 'undefined': return '';
         default:
-        case 'object': return value !== null ? JSON.stringify(value) : ''
+            // case 'undefined':
+            // case 'object':
+            return value !== null && value !== undefined ? JSON.stringify(value) : ''
     }
 }
 
