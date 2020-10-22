@@ -126,6 +126,10 @@ export function CustomerInformation() {
 
     const customerDataCellMapper = (row, key, classes) => {
         switch (key) {
+            case 'applicationId':
+                return <Link to={`/sharesApplications/application/${row[key]}`}><Tooltip title='Go to application'><p>{row[key]}</p></Tooltip></Link>;
+            case 'magentoUserId':
+                return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customerr'><p>{row[key]}</p></Tooltip></Link>;
             case 'BuyerMagentoUserId':
                 return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to buyer file'><p>{row[key]}</p></Tooltip></Link>;
             case 'RedeemUserId':

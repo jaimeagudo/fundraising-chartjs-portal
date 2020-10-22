@@ -27,6 +27,7 @@ const routes = [
     <PrivateRoute path="/sharesApplications/email/:email" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/user/:magentoUserId" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/paymentReference/:paymentReference" exact component={SharesApplications} />,
+    <PrivateRoute path="/sharesApplications/application/:applicationId" exact component={SharesApplications} />,
     <PrivateRoute path="/customers/:magentoUserId?/email/:email?/referralCode/:referralCode?" exact component={Customers} />,
     <PrivateRoute path="/customers/referralCode/:referralCode" exact component={Customers} />,
     <PrivateRoute path="/customers" exact component={Customers} />,
