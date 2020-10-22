@@ -6,7 +6,7 @@ import queryString from 'query-string';
 
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
-import { prettifyValue, fixedColors } from '../../utils'
+import { prettifyKV, fixedColors } from '../../utils'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -123,7 +123,7 @@ export function Vouchers() {
             //             Refund
             //         </Button>
             default:
-                return prettifyValue(row[key]);
+                return prettifyKV(key, row[key]);
         }
     }
 

@@ -23,7 +23,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Tooltip from '@material-ui/core/Tooltip';
 
-import { prettifyValue, } from '../../utils'
+import { prettifyKV, } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { useSnackbar } from 'notistack'
@@ -106,7 +106,7 @@ export function Reward() {
             case 'customerId':
                 return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip></Link>;
             default:
-                return prettifyValue(row[key])
+                return prettifyKV(key, row[key])
         }
 
     }

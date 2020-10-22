@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
-import { prettifyValue } from '../../utils'
+import { prettifyKV } from '../../utils'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -85,7 +85,7 @@ export function LockedAccounts() {
                 onClick={() => onUnlockClick(row['magentoUserId'])}
                 startIcon={<LockOpenIcon />}
             >Unlock  </Button>)
-            default: return prettifyValue(row[key])
+            default: return prettifyKV(key, row[key])
         }
 
     }

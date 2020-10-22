@@ -17,7 +17,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 import { ArrayRenderer, ObjectRenderer } from 'components/Generic'
 import Paper from '@material-ui/core/Paper';
-import { prettifyValue } from '../../utils'
+import { prettifyKV } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
@@ -145,7 +145,7 @@ export function CustomerInformation() {
                         Refund
                     </Button> : row.RefundDate || ''
             default:
-                return prettifyValue(row[key]);
+                return prettifyKV(key, row[key]);
         }
     }
     const columnNames = {

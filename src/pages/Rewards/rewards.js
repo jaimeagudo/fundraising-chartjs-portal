@@ -11,7 +11,7 @@ import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import { ArrayRenderer } from 'components/Generic'
 
-import { prettifyValue, } from '../../utils'
+import { prettifyKV, } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
@@ -49,7 +49,7 @@ export function Benefits() {
         switch (key) {
             case 'Action': return (
                 <Link to={`/rewards/${row.rewardId}/${row.title}`}>{intl.formatMessage({ id: 'manageStock' })}</Link>)
-            default: return prettifyValue(row[key])
+            default: return prettifyKV(key, row[key])
         }
 
     }

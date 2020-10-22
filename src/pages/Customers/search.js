@@ -15,7 +15,7 @@ import Grid from '@material-ui/core/Grid';
 import { ArrayRenderer } from 'components/Generic'
 import Paper from '@material-ui/core/Paper';
 import Search from '@material-ui/icons/Search';
-import { prettifyValue } from '../../utils'
+import { prettifyKV } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 
@@ -95,7 +95,7 @@ function CustomersSearch() {
             case 'magentoUserId':
                 return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip></Link>;
             default:
-                return prettifyValue(row[key]);
+                return prettifyKV(key, row[key]);
         }
     }
 

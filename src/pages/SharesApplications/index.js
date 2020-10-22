@@ -6,7 +6,7 @@ import queryString from 'query-string';
 
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
-import { prettifyValue, fixedColors } from '../../utils'
+import { prettifyKV, fixedColors } from '../../utils'
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -106,7 +106,7 @@ export function SharesApplications() {
                 const isVoucherCode = row[key].length === VOUCHERS_CODE_LENGTH
                 return isVoucherCode ? <Link to={`/vouchers/${row[key]}`}>
                     <Tooltip title='Go to voucher code details'><p>{row[key]}</p></Tooltip>
-                </Link> : prettifyValue(row[key]);
+                </Link> : prettifyKV(key, row[key]);
 
             case 'ReferralCode':
                 return (
@@ -124,7 +124,7 @@ export function SharesApplications() {
                         Refund
                     </Button>
             default:
-                return prettifyValue(row[key]);
+                return prettifyKV(key, row[key]);
         }
     }
 
