@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, memo } from 'react';
 import { Parser } from 'json2csv';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { pretiffyKey, prettifyKV, prettifyValue } from '../utils'
+import { pretiffyKey, prettifyKV, } from '../utils'
 
 import { withStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
@@ -15,7 +15,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
-import Typography from '@material-ui/core/Typography'
 import { useSnackbar } from 'notistack'
 import { makeStyles, withTheme } from '@material-ui/core/styles';
 

@@ -79,7 +79,7 @@ function CampaignStatus({ theme }) {
                 {status ?
                     (<div >
                         <Grid container spacing={1} >
-                            <Grid item xs={12} spacing={1} >
+                            <Grid item xs={12}  >
                                 <div className={classes.status}>
                                     <CountUp
                                         style={theme.typography.h3}
@@ -91,7 +91,7 @@ function CampaignStatus({ theme }) {
                                     <AccountBalanceIcon color="primary" className="material-icons" style={{ ...theme.typography.h3, marginLeft: 8 }} />
                                 </div>
                             </Grid>
-                            <Grid item xs={12} spacing={1}>
+                            <Grid item xs={12} >
                                 <div className={classes.status}>
                                     <CountUp
                                         style={theme.typography.h3}

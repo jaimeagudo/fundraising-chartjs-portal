@@ -74,14 +74,13 @@ export function LockedAccounts() {
     const lockedAccountsColumnNames = result && result && result.length ? [...Object.keys(result[0]), 'Action'] : [];
 
 
-    const lockedAccountsCellMapper = (row, key, classes) => {
+    const lockedAccountsCellMapper = (row, key) => {
         switch (key) {
             case 'magentoUserId':
                 return <Link to={`/customer/${row[key]}`}><Tooltip title='Go to customer file'><p>{row[key]}</p></Tooltip></Link>;
             case 'Action': return (<Button
                 variant="contained"
                 color="secondary"
-                className={classes.button}
                 onClick={() => onUnlockClick(row['magentoUserId'])}
                 startIcon={<LockOpenIcon />}
             >Unlock  </Button>)
@@ -98,10 +97,9 @@ export function LockedAccounts() {
             <Scrollbar style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }} >
                 <p className={classes.p}>{intl.formatMessage({ id: 'lockedCustomerExplanation' })}
                     {result && result.length && <Button
-                        className={classes.p}
                         variant="contained"
                         color="secondary"
-                        className={classes.button}
+                        className={classes.p}
                         style={{ float: 'right' }}
                         onClick={onUnlockAllClick}
                         startIcon={<LockOpenIcon />}
