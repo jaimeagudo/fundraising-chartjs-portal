@@ -14,6 +14,7 @@ import GetApp from '@material-ui/icons/GetApp'
 import ChromeReaderMode from '@material-ui/icons/ChromeReaderMode'
 import StyleIcon from '@material-ui/icons/Style'
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
+import TimelineIcon from '@material-ui/icons/Timeline';
 
 import allLocales from './locales'
 import allThemes from './themes'
@@ -83,8 +84,12 @@ const getMenuItems = (props) => {
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'campaignStatus' }),
             leftIcon: <PollIcon />,
+        }, {
+            value: '/campaign/timestats',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'campaignTimeStats' }),
+            leftIcon: <TimelineIcon />,
         },
-
         {
             value: '/customers',
             visible: isAuthorised,
