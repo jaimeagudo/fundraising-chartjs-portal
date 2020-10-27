@@ -8,6 +8,7 @@ const SignIn = lazy(() => import('../pages/SignIn/SignIn'))
 const SignUp = lazy(() => import('../pages/SignUp/SignUp'))
 const About = lazy(() => import('../pages/About/About'))
 const CampaignStatus = lazy(() => import('../pages/CampaignStatus'))
+const CampaignTimeStats = lazy(() => import('../pages/CampaignStatus/timeStats'))
 const SharesApplications = lazy(() => import('../pages/SharesApplications'))
 const Customer = lazy(() => import('../pages/Customers/customer'))
 const Customers = lazy(() => import('../pages/Customers/search'))
@@ -23,6 +24,7 @@ const routes = [
     <PublicRoute path="/signup" redirectTo="/" exact component={SignUp} />,
     <PrivateRoute path="/home" exact component={CampaignStatus} />,
     <PrivateRoute path="/campaign/status" exact component={CampaignStatus} />,
+    <PrivateRoute path="/campaign/timestats" exact component={CampaignTimeStats} />,
     <PrivateRoute path="/sharesApplications" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/email/:email" exact component={SharesApplications} />,
     <PrivateRoute path="/sharesApplications/user/:magentoUserId" exact component={SharesApplications} />,

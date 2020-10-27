@@ -22,6 +22,7 @@ const messages = defineMessages({
     menuMiniMode: 'Mini menu',
     offline: 'Offline',
     campaignStatus: 'Campaign Status',
+    campaignTimeStats: 'Campaign Time Statistics',
     sharesApplications: 'Shares Applications',
     customerInformation: 'Customer Information - {magentoUserId}',
     customers: 'Customers',
