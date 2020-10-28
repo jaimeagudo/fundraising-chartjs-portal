@@ -1,3 +1,8 @@
+
+#v1.5.1 / 2020-10-28
+==================
+- Improve number formatting on graph
+
 # v1.5.0 / 2020-10-22
 
 - Improve unlock-all button margin
