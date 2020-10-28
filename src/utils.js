@@ -15,7 +15,7 @@ function pretiffyKey(name) {
 
 const daysFormattedDates = ['startDate', 'endDate']
 const fieldsWithPences = ['raisedAmountTomorrow', 'sharePriceWithPences', 'targetAmountWithPences', 'AmountWithPences']
-const currencyRegexps = [/value/i, /averageInvestment/i, /biggestInvestmentValue/i]
+const currencyRegexps = [/gbp/i, /value/i, /averageInvestment/i, /biggestInvestmentValue/i]
 
 
 const customerIdRegexps = [/magentoUserId/i, /BuyerMagentoUserId/i, /RedeemUserId/i]

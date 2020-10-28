@@ -1,32 +1,21 @@
 import React, { useState, useEffect, memo } from 'react';
-// import { Bar } from '@reactchartjs/react-chart.js'
 import { Helmet } from 'react-helmet';
 import { Bar } from 'react-chartjs-2';
+import { useIntl } from 'react-intl'
+
+import { makeStyles, withTheme } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
-
-import { useIntl, FormattedMessage } from 'react-intl'
-
-
-import { makeStyles, withTheme } from '@material-ui/core/styles';
-
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 
 
 import efpApiClient from '../../services/efpApiClient';
-
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
-import { pretiffyKey, fixedColors } from '../../utils'
-import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
-
-
-
-const stacked = false
-
-
+import { prettifyKV, } from '../../utils'
+import { ArrayRenderer } from 'components/Generic'
 
 
 
@@ -44,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+const containsGbp = text => /value/i.test(text)
 
 
 function TimeStats({ theme }) {
@@ -63,33 +53,36 @@ function TimeStats({ theme }) {
 
     const options = {
         scales: {
-            yAxes: [
-                {
-                    stacked,
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                },
-            ],
-            xAxes: [
-                {
-                    stacked,
-                },
-            ],
+            yAxes: [{
+                stacked,
+                ticks: { beginAtZero: true }
+            }],
+            xAxes: [{
+                stacked
+            }],
         },
-        maintainAspectRatio: true
-
-
+        maintainAspectRatio: true,
     }
-    const handleSwitch = (event) => {
-        setStacked(event.target.checked);
-    };
-    console.log("TimeStats -> window.innerHeight", window.innerHeight)
+
+    const gbpTooltips = {
+        tooltips: {
+            callbacks: {
+                label: (tooltipItem) => prettifyKV('gbp', tooltipItem.yLabel)
+            },
+        },
+    }
+
+    const handleSwitch = (event) => setStacked(event.target.checked);
 
     const isMobile = window.innerWidth < 500
-
-
     const responsiveSizeHack = isMobile ? 200 : null
+
+    const control = <Switch
+        checked={stacked}
+        onChange={handleSwitch}
+        name="checkedB"
+        color="primary"
+    />
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'campaignTimeStats' })}>
@@ -97,24 +90,17 @@ function TimeStats({ theme }) {
                 <title>{intl.formatMessage({ id: 'campaignTimeStats' })}</title>
             </Helmet>
             <Scrollbar >
-
                 {stats ? stats.map(stat =>
                     (<Paper key={stat.title} className={classes.paper} >
                         {stat.title && <h2 className={classes.title}>{stat.title}</h2>}
                         <FormControlLabel
-                            control={<Switch
-                                checked={stacked}
-                                onChange={handleSwitch}
-                                name="checkedB"
-                                color="primary"
-                            />
-                            }
+                            control={control}
                             label="Stacked"
                         />
                         <Bar data={stat}
                             width={responsiveSizeHack}
                             height={responsiveSizeHack}
-                            options={options} />
+                            options={{ ...options, ...containsGbp(stat.title) ? gbpTooltips : {} }} />
                         {stat.datasets.map(dataset =>
                             <ArrayRenderer
                                 key={dataset.label}
@@ -122,6 +108,7 @@ function TimeStats({ theme }) {
                                 columnNames={stat.labels}
                                 title={dataset.label}
                                 classes={classes}
+                                cellMapper={(row, key) => prettifyKV(containsGbp(stat.title) ? 'gbp' : key, row[key])}
                                 error={error && error.message}
                             />)
                         }
