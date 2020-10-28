@@ -19,7 +19,7 @@ import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import efpApiClient from '../../services/efpApiClient';
 
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
-import { pretiffyKey, fixedColors } from '../../utils'
+import { prettifyKV, fixedColors } from '../../utils'
 import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 
 
@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
+const containsGbp = text => /value/i.test(text)
 
 
 function TimeStats({ theme }) {
@@ -77,10 +78,19 @@ function TimeStats({ theme }) {
                 },
             ],
         },
-        maintainAspectRatio: true
-
+        maintainAspectRatio: true,
 
     }
+
+
+    const gbpTooltips = {
+        tooltips: {
+            callbacks: {
+                label: (tooltipItem) => prettifyKV('gbp', tooltipItem.yLabel)
+            },
+        },
+    }
+
     const handleSwitch = (event) => {
         setStacked(event.target.checked);
     };
@@ -114,14 +124,16 @@ function TimeStats({ theme }) {
                         <Bar data={stat}
                             width={responsiveSizeHack}
                             height={responsiveSizeHack}
-                            options={options} />
+                            options={{ ...options, ...containsGbp(stat.title) ? gbpTooltips : {} }} />
                         {stat.datasets.map(dataset =>
+
                             <ArrayRenderer
                                 key={dataset.label}
                                 rows={[stat.labels.reduce((acc, label, i) => ({ ...acc, [label]: dataset.data[i] }), {})]}
                                 columnNames={stat.labels}
                                 title={dataset.label}
                                 classes={classes}
+                                cellMapper={(row, key) => prettifyKV(containsGbp(stat.title) ? 'gbp' : key, row[key])}
                                 error={error && error.message}
                             />)
                         }

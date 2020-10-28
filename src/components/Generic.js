@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
 
 const defaultCellMapper = (row, key, classes) => prettifyKV(key, row[key])
 
-const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null, showLength = false, stickyHeader = false }) => {
+const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper, error = null, showLength = false, stickyHeader = false }) => {
     const { enqueueSnackbar } = useSnackbar()
     const helper = error || (rows && rows.length ? '' : 'No data')
     const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
