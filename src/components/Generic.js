@@ -1,6 +1,5 @@
-import React, { useCallback, useMemo, memo } from 'react';
+import React, { useMemo, memo } from 'react';
 import { Parser } from 'json2csv';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { pretiffyKey, prettifyKV, } from '../utils'
 
 import { withStyles } from '@material-ui/core/styles';
@@ -15,11 +14,14 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
-import { useSnackbar } from 'notistack'
 import { makeStyles, withTheme } from '@material-ui/core/styles';
+import { CSVLink, } from "react-csv";
 
-const fixLineEnds = s => s.replace(/[\n]/gm, '\r\n')
-const excelParsingOptions = { excelStrings: true, }
+const EXTENSION = '.csv'
+const fixLineEnds = s => s // s.replace(/[\n]/gm, '\r\n\r\n')
+const excelParsingOptions = { excelStrings: true, delimiter: ';', withBom: true, } //encoding: 'utf8-bom', eol: '\r\n'
+
+
 
 const StyledTableCell = withStyles((theme) => ({
     head: {
@@ -67,21 +69,26 @@ const useStyles = makeStyles((theme) => ({
 const defaultCellMapper = (row, key, classes) => prettifyKV(key, row[key])
 
 const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = defaultCellMapper, error = null, showLength = false, stickyHeader = false }) => {
-    const { enqueueSnackbar } = useSnackbar()
     const helper = error || (rows && rows.length ? '' : 'No data')
-    const onCopy = useCallback(() => enqueueSnackbar(`${title} copied`, { variant: 'success' }), [title, enqueueSnackbar])
     const startIcon = <CopyIcon />
 
     const genericClasses = useStyles()
-    const text = useMemo(() => rows && rows.length ? fixLineEnds(new Parser(excelParsingOptions).parse(rows)) : '', [rows])
-
+    const data = rows && rows.length ? rows : null; //[rows]
+    const filename = title + EXTENSION
+    const linkStyle = { color: '#00AFDB' };
     return (
         <Paper className={genericClasses.paper} key={title}>
             <h2 className={classes.title}>{title}</h2>
-            {rows && rows.length ?
-                <CopyToClipboard text={text} onCopy={onCopy}>
-                    <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
-                </CopyToClipboard> : null}
+            {data ?
+                (<CSVLink
+                    separator={";"}
+                    data={data}
+                    style={linkStyle}
+                    filename={filename}
+                    target="_blank">
+                    <Button color="primary" startIcon={startIcon}>DOWNLOAD AS CSV</Button>
+                </CSVLink>)
+                : null}
             <TableContainer >
                 <Table stickyHeader className={classes.table} aria-label="customized table">
                     {rows && rows.length ?
@@ -107,35 +114,40 @@ const ArrayRenderer = memo(({ columnNames, rows, title, classes, cellMapper = de
             <FormControl component="fieldset" error={!!error} className={classes.formControl}>
                 <FormHelperText>{helper}</FormHelperText>
             </FormControl>
-        </Paper>)
+        </Paper >)
 })
 
 
 const ObjectRenderer = memo(({ obj, classes, name }) => {
 
     const genericClasses = useStyles()
-    const { enqueueSnackbar } = useSnackbar()
     /*Non empty/null values are listed first */
     const fields = useMemo(() => obj ? Object.keys(obj).sort((a, b) => !!obj[a] && !obj[b] ? -1 : 0) : [], [obj])
     const title = pretiffyKey(name)
     const text = useMemo(() => fixLineEnds(new Parser({ fields, ...excelParsingOptions }).parse(obj)), [obj, fields])
 
-    const onCopy = useCallback((clipboardData) => {
-        // console.log("clipboardData", clipboardData)
-        enqueueSnackbar(`${title} copied`, { variant: 'success' })
-    }, [title, enqueueSnackbar])
-
+    const filename = title + EXTENSION
+    const linkStyle = { color: '#00AFDB' };
     const startIcon = <CopyIcon />
 
     if (!obj) {
         return null
     }
+
+
     return (
         <Paper className={genericClasses.paper} key={title}>
             <h2 className={classes.title}>{title}</h2>
-            <CopyToClipboard text={text} onCopy={onCopy} >
-                <Button color="primary" startIcon={startIcon}>Copy to clipboard</Button>
-            </CopyToClipboard>
+            {text ?
+                (<CSVLink
+                    separator={";"}
+                    data={text}
+                    style={linkStyle}
+                    filename={filename}
+                    target="_blank">
+                    <Button color="primary" startIcon={startIcon}>DOWNLOAD AS CSV</Button>
+                </CSVLink>)
+                : null}
             <TableContainer >
                 <Table className={classes.table} aria-label="simple table">
                     <TableBody>
