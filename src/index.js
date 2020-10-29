@@ -1,4 +1,4 @@
-import './wdyr';
+// import './wdyr';
 import React from 'react'
 import { render } from 'react-dom'
 import App from './App'
