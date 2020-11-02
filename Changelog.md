@@ -1,4 +1,11 @@
 
+# V1.6.0 / 2020-11-02
+==================
+
+  * EFP-374 add to-from as parameters to timestats
+  * EFP-373 Download as csv to export to CSV in one click
+  * Update changelog
+
 #v1.5.1 / 2020-10-28
 ==================
 - Improve number formatting on graph
