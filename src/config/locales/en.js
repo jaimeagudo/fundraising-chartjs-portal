@@ -23,6 +23,7 @@ const messages = defineMessages({
     offline: 'Offline',
     campaignStatus: 'Campaign Status',
     campaignTimeStats: 'Campaign Time Statistics',
+    campaignGeoStats: 'Campaign Geo Statistics',
     sharesApplications: 'Shares Applications',
     customerInformation: 'Customer Information - {magentoUserId}',
     customers: 'Customers',
