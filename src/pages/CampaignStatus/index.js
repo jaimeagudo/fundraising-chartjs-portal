@@ -20,23 +20,6 @@ import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { pretiffyKey, fixedColors } from '../../utils'
 import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 
-
-
-const renderPie = (array, labelKey, dataKey) => {
-
-    const pieData = array && array.length ? {
-        labels: array.map(r => r[labelKey]),
-        datasets: [{
-            data: array.map(r => r[dataKey]),
-            backgroundColor: fixedColors(array.length),
-            // hoverBackgroundColor: rainbow(array.length)
-        }]
-    } : {}
-
-    return pieData ? <Doughnut data={pieData} /> : <CircularProgress />
-}
-
-
 const useStyles = makeStyles((theme) => ({
     title: {
         paddingLeft: 10,
