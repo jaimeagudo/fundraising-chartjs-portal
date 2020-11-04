@@ -17,8 +17,17 @@ import Grid from '@material-ui/core/Grid';
 import { prettifyKV, fixedColors } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
+import codesMap from '../../isoCountryCodesMap'
+import namesMap from '../../isoCountryNamesMap'
 import { ArrayRenderer } from 'components/Generic'
 
+const getIso2CC = (iso3CC) => codesMap[iso3CC]
+const getCountryName = (iso3CC) => namesMap[getIso2CC(iso3CC)]
+
+
+const isMobile = window.innerWidth < 400
+const responsiveSizeHackWidth = isMobile ? 200 : null
+const responsiveSizeHackHeight = isMobile ? 500 : null
 
 const renderPies = (stat, classes) => stat && stat.labels ?
     <div>
@@ -26,17 +35,22 @@ const renderPies = (stat, classes) => stat && stat.labels ?
             const gbpTooltips = {
                 tooltips: {
                     callbacks: {
-                        label: (tooltipItem) => stat.labels[tooltipItem.index] + ': ' + prettifyKV('gbp', dataset.data[tooltipItem.index])
+                        label: (tooltipItem) => getCountryName(stat.labels[tooltipItem.index]) + ': ' + prettifyKV('gbp', dataset.data[tooltipItem.index])
                     },
                 },
             };
 
-
+            const rows = [stat.labels.reduce((acc, label, i) => ({ ...acc, [getCountryName(label)]: dataset.data[i] }), {})]
+            const columnNames = stat.labels.map(getCountryName)
+            const cellMapper = (row, key) => prettifyKV(containsGbp(stat.title) ? 'gbp' : key, row[key])
 
             return (<div>
                 <h2>{dataset.label}</h2>
+                {/* <img alt={stat.labels[0]} style={{ width: '32px' }} src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${codesMap[stat.labels[0]]}.svg`} /> */}
                 <Doughnut
                     options={gbpTooltips}
+                    width={responsiveSizeHackWidth}
+                    height={responsiveSizeHackHeight}
                     data={{
                         labels: stat.labels,
                         datasets: [{
@@ -46,11 +60,11 @@ const renderPies = (stat, classes) => stat && stat.labels ?
                     }} />
                 <ArrayRenderer
                     key={dataset.label}
-                    rows={[stat.labels.reduce((acc, label, i) => ({ ...acc, [label]: dataset.data[i] }), {})]}
-                    columnNames={stat.labels}
+                    rows={rows}
+                    columnNames={columnNames}
                     classes={classes}
                     title={dataset.label}
-                    cellMapper={(row, key) => prettifyKV(containsGbp(stat.title) ? 'gbp' : key, row[key])}
+                    cellMapper={cellMapper}
                 />
             </div>
             )
@@ -82,7 +96,6 @@ function GeoStats({ theme }) {
     const IPOCODE = 'BDIPA'
 
     const [stats, setStats] = useState(null);
-    const [stacked, setStacked] = useState(true);
     const [error, setError] = useState(null);
     useSessionTimeoutHandler(error)
 
@@ -117,18 +130,6 @@ function GeoStats({ theme }) {
 
 
 
-    const handleSwitch = (event) => setStacked(event.target.checked);
-
-    const isMobile = window.innerWidth < 500
-    const responsiveSizeHack = isMobile ? 200 : null
-
-    const control = <Switch
-        checked={stacked}
-        onChange={handleSwitch}
-        name="checkedB"
-        color="primary"
-    />
-
     return (
 
         <Page pageTitle={intl.formatMessage({ id: 'campaignGeoStats' })}>
@@ -139,14 +140,6 @@ function GeoStats({ theme }) {
                 {stats ? stats.map(stat =>
                     (<Paper key={stat.title} className={classes.paper} >
                         {stat.title && <h2 className={classes.title}>{stat.title}</h2>}
-                        <Grid container justify="space-around">
-                            <Grid item xs={12} sm={3} md={3}  >
-                                <FormControlLabel
-                                    control={control}
-                                    label="Stacked"
-                                />
-                            </Grid>
-                        </Grid>
                         {renderPies(stat, classes)}
                         {/* <Bar data={stat}
                                 width={responsiveSizeHack}
