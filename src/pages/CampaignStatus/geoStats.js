@@ -27,7 +27,7 @@ const getCountryName = (iso3CC) => namesMap[getIso2CC(iso3CC)]
 
 const isMobile = window.innerWidth < 400
 const responsiveSizeHackWidth = isMobile ? 200 : null
-const responsiveSizeHackHeight = isMobile ? 500 : null
+const responsiveSizeHackHeight = isMobile ? 600 : null
 
 const renderPies = (stat, classes) => stat && stat.labels ?
     <div>
