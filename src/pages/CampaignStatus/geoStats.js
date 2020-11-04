@@ -24,10 +24,8 @@ import { ArrayRenderer } from 'components/Generic'
 const getIso2CC = (iso3CC) => codesMap[iso3CC]
 const getCountryName = (iso3CC) => namesMap[getIso2CC(iso3CC)]
 
-
-const isMobile = window.innerWidth < 400
-const responsiveSizeHackWidth = isMobile ? 200 : null
-const responsiveSizeHackHeight = isMobile ? 600 : null
+const isMobile = window.innerWidth < 500
+const responsiveSizeHack = isMobile ? window.innerWidth + 400 : window.innerWidth
 
 const renderPies = (stat, classes) => stat && stat.labels ?
     <div>
@@ -44,20 +42,25 @@ const renderPies = (stat, classes) => stat && stat.labels ?
             const columnNames = stat.labels.map(getCountryName)
             const cellMapper = (row, key) => prettifyKV(containsGbp(stat.title) ? 'gbp' : key, row[key])
 
-            return (<div>
+            return (<div key={dataset.label}>
                 <h2>{dataset.label}</h2>
                 {/* <img alt={stat.labels[0]} style={{ width: '32px' }} src={`http://purecatamphetamine.github.io/country-flag-icons/3x2/${codesMap[stat.labels[0]]}.svg`} /> */}
-                <Doughnut
-                    options={gbpTooltips}
-                    width={responsiveSizeHackWidth}
-                    height={responsiveSizeHackHeight}
-                    data={{
-                        labels: stat.labels,
-                        datasets: [{
-                            data: dataset.data,
-                            backgroundColor: fixedColors(stat.labels.length)
-                        }]
-                    }} />
+                <div >
+                    <Doughnut
+                        options={{
+                            ...gbpTooltips, maintainAspectRatio: !isMobile, responsive: true, legend: { position: 'bottom' }
+                        }}
+
+                        height={responsiveSizeHack}
+                        width={responsiveSizeHack}
+                        data={{
+                            labels: stat.labels,
+                            datasets: [{
+                                data: dataset.data,
+                                backgroundColor: fixedColors(stat.labels.length)
+                            }]
+                        }} />
+                </div>
                 <ArrayRenderer
                     key={dataset.label}
                     rows={rows}
@@ -139,7 +142,7 @@ function GeoStats({ theme }) {
             <Scrollbar >
                 {stats ? stats.map(stat =>
                     (<Paper key={stat.title} className={classes.paper} >
-                        {stat.title && <h2 className={classes.title}>{stat.title}</h2>}
+                        {/* {stat.title && <h2 className={classes.title}>{stat.title}</h2>} */}
                         {renderPies(stat, classes)}
                         {/* <Bar data={stat}
                                 width={responsiveSizeHack}
