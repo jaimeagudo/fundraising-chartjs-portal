@@ -1,4 +1,11 @@
 
+# v1.7.1 / 2020-11-04
+==================
+
+  * EFP-376 Fix geo stats pie graphs not showing on mobiles
+  * EFP-376 increase height to display geo pies on iPhone X
+  * EFP-376 Add country names, improve formatting
+
 # v1.7.0 / 2020-11-04
 ==================
   * EFP-376 Add geostats page
