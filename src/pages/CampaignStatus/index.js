@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import CountUp from 'react-countup'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function CampaignStatus({ theme }) {
-
+    const ipocode = useSelector(state => state.campaign.current)
     const intl = useIntl()
 
     const [stats, setStats] = useState(null);
@@ -40,8 +41,8 @@ function CampaignStatus({ theme }) {
     useSessionTimeoutHandler(error)
 
     useEffect(() => {
-        efpApiClient.requestEfpApi('/campaign/status/BDIPA').then(setStatus).catch(setError);
-        efpApiClient.requestEfpApi('/admin/campaign/stats/BDIPA').then(setStats).catch(setError);
+        efpApiClient.requestEfpApi(`/campaign/status/${ipocode}`).then(setStatus).catch(setError);
+        efpApiClient.requestEfpApi(`/admin/campaign/stats/${ipocode}`).then(setStats).catch(setError);
     }, []);
 
     const classes = useStyles();

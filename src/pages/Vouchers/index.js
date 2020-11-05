@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { useIntl, FormattedMessage } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
 import queryString from 'query-string';
@@ -52,9 +53,10 @@ const useStyles = makeStyles((theme) => ({
 
 // https://codesandbox.io/s/k2kqwpvnn3?file=/src/App.js:423-761
 
-const IPOCODE = 'BDIPA'
 
 export function Vouchers() {
+    const ipocode = useSelector(state => state.campaign.current)
+
     const intl = useIntl()
     const classes = useStyles();
     const params = useParams();
@@ -73,7 +75,7 @@ export function Vouchers() {
         async function fetchData() {
             const endpoint = queryString.stringifyUrl(
                 {
-                    url: `/admin/vouchers/${IPOCODE}/search`,
+                    url: `/admin/vouchers/${ipocode}/search`,
                     query: { Code, RedeemUserId, BuyerMagentoUserId, PaymentReference, limit: 10 }
                 },
                 { skipEmptyString: true, skipNull: true })
@@ -83,7 +85,7 @@ export function Vouchers() {
         }
         fetchData()
         return () => { ignore = true; }
-    }, [Code, RedeemUserId, PaymentReference, BuyerMagentoUserId, requestDate]);
+    }, [ipocode, Code, RedeemUserId, PaymentReference, BuyerMagentoUserId, requestDate]);
 
     // const onRefundClick = useCallback((PaymentReference) => {
     //     async function refundClick() {
