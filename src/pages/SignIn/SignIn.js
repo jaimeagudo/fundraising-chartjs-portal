@@ -1,16 +1,24 @@
-import Button from '@material-ui/core/Button'
-import Page from 'material-ui-shell/lib/containers/Page/Page'
-import Paper from '@material-ui/core/Paper'
-import React, { useState, useCallback } from 'react'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState, useCallback, useEffect } from 'react'
 import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
-import { useMenu } from 'material-ui-shell/lib/providers/Menu'
-import efpApiClient from 'services/efpApiClient'
 import { useSnackbar } from 'notistack'
+import { useDispatch } from 'react-redux';
+import { useMenu } from 'material-ui-shell/lib/providers/Menu'
+
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Page from 'material-ui-shell/lib/containers/Page/Page'
+import Paper from '@material-ui/core/Paper'
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography'
+
+import efpApiClient from 'services/efpApiClient'
+import { DEFAULT_IPOCODE } from 'state/campaign/constants'
+import { changeCampaign, loadCampaigns } from 'state/campaign/actions'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -26,9 +34,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
-            3
-        )}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     avatar: {
         margin: theme.spacing(1),
@@ -62,11 +68,27 @@ const SignIn = () => {
     const classes = useStyles()
     const intl = useIntl()
     const history = useHistory()
+    const dispatch = useDispatch()
+
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [ipocode, setIpocode] = React.useState(DEFAULT_IPOCODE);
+
+
     const { setAuthMenuOpen } = useMenu()
     const { setAuth } = useAuth()
     const { enqueueSnackbar } = useSnackbar()
+
+    useEffect(() => {
+        dispatch(loadCampaigns())
+    })
+
+    const handleIpoCodeChange = useCallback((event) => {
+        const code = event.target.value
+        setIpocode(code)
+        dispatch(changeCampaign(code))
+    }, [dispatch])
+
 
     const onSubmit = useCallback((event) => {
 
@@ -126,6 +148,18 @@ const SignIn = () => {
                             id="password"
                             autoComplete="current-password"
                         />
+                        <InputLabel id="campaignLabel">Campaign</InputLabel>
+                        <Select
+                            labelId="ipoCode"
+                            id="ipoCode"
+                            label='Campaign'
+                            fullWidth
+                            variant="outlined"
+                            value={ipocode}
+                            onChange={handleIpoCodeChange} >
+                            <MenuItem value={DEFAULT_IPOCODE}>{DEFAULT_IPOCODE}</MenuItem>
+                            {/* <MenuItem value={'none'}>{'none'}</MenuItem> */}
+                        </Select>
                         <Button
                             type="submit"
                             fullWidth
@@ -136,16 +170,6 @@ const SignIn = () => {
                             {intl.formatMessage({ id: 'signIn' })}
                         </Button>
                     </form>
-
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            width: '100%',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                    </div>
                 </div>
             </Paper>
         </Page>
