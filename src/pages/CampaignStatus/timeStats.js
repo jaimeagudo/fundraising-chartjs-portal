@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
+import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Bar } from 'react-chartjs-2';
 import { useIntl } from 'react-intl'
@@ -9,7 +10,6 @@ import Switch from '@material-ui/core/Switch';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 
 
@@ -50,7 +50,7 @@ function TimeStats({ theme }) {
     const intl = useIntl()
     //TODO extract to campaign selector
     const DATE_FORMAT = "yyyy-MM-dd"
-    const IPOCODE = 'BDIPA'
+    const ipocode = useSelector(state => state.campaign.current)
     const CAMPAIGN_START = "2020-09-09"
 
     const [stats, setStats] = useState(null);
@@ -62,7 +62,7 @@ function TimeStats({ theme }) {
 
     useEffect(() => {
         const endpoint = queryString.stringifyUrl({
-            url: `/admin/campaign/timestats/${IPOCODE}`,
+            url: `/admin/campaign/timestats/${ipocode}`,
             query: {
                 from: from ? format(from, DATE_FORMAT) : null,
                 to: to ? format(to, DATE_FORMAT) : null
@@ -72,7 +72,7 @@ function TimeStats({ theme }) {
         })
 
         efpApiClient.requestEfpApi(endpoint).then(setStats).catch(setError);
-    }, [from, to]);
+    }, [from, to, ipocode]);
 
     const classes = useStyles();
 

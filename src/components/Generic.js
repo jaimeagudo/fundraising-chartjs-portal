@@ -14,7 +14,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import CopyIcon from '@material-ui/icons/GetApp';
-import { makeStyles, withTheme } from '@material-ui/core/styles';
+import { makeStyles, } from '@material-ui/core/styles';
 import { CSVLink, } from "react-csv";
 
 const EXTENSION = '.csv'
