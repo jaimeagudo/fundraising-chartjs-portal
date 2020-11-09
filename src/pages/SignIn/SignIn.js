@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
@@ -15,9 +16,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import efpApiClient from 'services/efpApiClient'
-import { DEFAULT_IPOCODE } from 'state/campaign/constants'
 import { changeCampaign, loadCampaigns } from 'state/campaign/actions'
 
 const useStyles = makeStyles((theme) => ({
@@ -69,11 +70,11 @@ const SignIn = () => {
     const intl = useIntl()
     const history = useHistory()
     const dispatch = useDispatch()
+    const { current, campaigns, loading } = useSelector(state => state.campaign)
 
+    const [ipocode, setIpocode] = React.useState(current);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [ipocode, setIpocode] = React.useState(DEFAULT_IPOCODE);
-
 
     const { setAuthMenuOpen } = useMenu()
     const { setAuth } = useAuth()
@@ -81,7 +82,7 @@ const SignIn = () => {
 
     useEffect(() => {
         dispatch(loadCampaigns())
-    })
+    }, [dispatch])
 
     const handleIpoCodeChange = useCallback((event) => {
         const code = event.target.value
@@ -93,10 +94,8 @@ const SignIn = () => {
     const onSubmit = useCallback((event) => {
 
         async function handleSubmit() {
-            const response = await efpApiClient.authenticate(username, password).catch(e => {
-                console.error(e)
+            const response = await efpApiClient.authenticate(username, password).catch(e =>
                 enqueueSnackbar(e.status === 401 ? 'Unauthorized' : e.message, snackBarErrorOptions)
-            }
             )
 
             if (response && response.accessToken) {
@@ -149,26 +148,31 @@ const SignIn = () => {
                             autoComplete="current-password"
                         />
                         <InputLabel id="campaignLabel">Campaign</InputLabel>
-                        <Select
-                            labelId="ipoCode"
-                            id="ipoCode"
-                            label='Campaign'
-                            fullWidth
-                            variant="outlined"
-                            value={ipocode}
-                            onChange={handleIpoCodeChange} >
-                            <MenuItem value={DEFAULT_IPOCODE}>{DEFAULT_IPOCODE}</MenuItem>
-                            {/* <MenuItem value={'none'}>{'none'}</MenuItem> */}
-                        </Select>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            {intl.formatMessage({ id: 'signIn' })}
-                        </Button>
+                        {loading ? <CircularProgress /> :
+                            <div>
+                                <Select
+                                    labelId="ipoCode"
+                                    id="ipoCode"
+                                    label='Campaign'
+                                    fullWidth
+                                    variant="outlined"
+                                    value={ipocode}
+                                    onChange={handleIpoCodeChange} >
+                                    {campaigns.map(campaign =>
+                                        <MenuItem key={campaign.id} value={campaign.id}>{campaign.id}</MenuItem>
+                                    )}
+                                </Select>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                >
+                                    {intl.formatMessage({ id: 'signIn' })}
+                                </Button>
+                            </div>
+                        }
                     </form>
                 </div>
             </Paper>

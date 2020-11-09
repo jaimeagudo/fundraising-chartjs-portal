@@ -15,10 +15,9 @@ const appReducer = (state = initialState, action) =>
             case LOAD_CAMPAIGNS:
                 draft.loading = true;
                 draft.error = false;
-                draft.campaigns = false;
                 break;
             case LOAD_CAMPAIGNS_SUCCESS:
-                draft.campaigns = action.repos;
+                draft.campaigns = action.campaigns;
                 draft.loading = false;
                 break;
             case LOAD_CAMPAIGNS_ERROR:
