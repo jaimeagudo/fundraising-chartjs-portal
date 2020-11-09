@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef, useMemo, memo } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
 import { useIntl } from 'react-intl'
 import { useParams, useHistory, Link } from 'react-router-dom';
@@ -88,7 +88,7 @@ function CustomersSearch() {
             // console.log(`#### cancelling /customers/search?email=${email}&magentoUserId=${magentoUserId}`)
             controller.abort()
         }
-    }, [magentoUserId, email, referralCode]);
+    }, [magentoUserId, email, referralCode, params.referralCode, history]);
 
     const participantsCellMapper = (row, key, classes) => {
         switch (key) {

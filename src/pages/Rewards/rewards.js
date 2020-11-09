@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom';
 
@@ -29,17 +30,18 @@ export function Benefits() {
     const [sharesRewards, setSharesRewards] = useState([]);
     const [referralRewards, setReferralRewards] = useState([]);
     useSessionTimeoutHandler(error)
+    const ipocode = useSelector(state => state.campaign.current)
 
     const fetchRewards = useCallback(async () => {
         const resultS = await efpApiClient.requestEfpApi(
-            `/rewards/shares/BDIPA`)
+            `/rewards/shares/${ipocode}`)
             .catch(setError);
         setSharesRewards(resultS);
         const resultR = await efpApiClient.requestEfpApi(
-            `/rewards/referrals/BDIPA`)
+            `/rewards/referrals/${ipocode}`)
             .catch(setError);
         setReferralRewards(resultR);
-    }, []);
+    }, [ipocode]);
 
     useEffect(() => {
         fetchRewards()

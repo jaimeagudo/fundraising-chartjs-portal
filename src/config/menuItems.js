@@ -22,7 +22,6 @@ import allThemes from './themes'
 
 const getMenuItems = (props) => {
     const {
-        appConfig,
         intl,
         updateLocale,
         locale,

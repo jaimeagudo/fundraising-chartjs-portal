@@ -1,16 +1,25 @@
-import Button from '@material-ui/core/Button'
-import Page from 'material-ui-shell/lib/containers/Page/Page'
-import Paper from '@material-ui/core/Paper'
-import React, { useState, useCallback } from 'react'
-import TextField from '@material-ui/core/TextField'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState, useCallback, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
-import { useMenu } from 'material-ui-shell/lib/providers/Menu'
-import efpApiClient from 'services/efpApiClient'
 import { useSnackbar } from 'notistack'
+import { useDispatch } from 'react-redux';
+import { useMenu } from 'material-ui-shell/lib/providers/Menu'
+
+import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
+import Page from 'material-ui-shell/lib/containers/Page/Page'
+import Paper from '@material-ui/core/Paper'
+import TextField from '@material-ui/core/TextField'
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress';
+
+import efpApiClient from 'services/efpApiClient'
+import { changeCampaign, loadCampaigns } from 'state/campaign/actions'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -26,9 +35,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
-            3
-        )}px`,
+        padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(3)}px`,
     },
     avatar: {
         margin: theme.spacing(1),
@@ -62,19 +69,33 @@ const SignIn = () => {
     const classes = useStyles()
     const intl = useIntl()
     const history = useHistory()
+    const dispatch = useDispatch()
+    const { current, campaigns, loading } = useSelector(state => state.campaign)
+
+    const [ipocode, setIpocode] = React.useState(current);
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+
     const { setAuthMenuOpen } = useMenu()
     const { setAuth } = useAuth()
     const { enqueueSnackbar } = useSnackbar()
 
+    useEffect(() => {
+        dispatch(loadCampaigns())
+    }, [dispatch])
+
+    const handleIpoCodeChange = useCallback((event) => {
+        const code = event.target.value
+        setIpocode(code)
+        dispatch(changeCampaign(code))
+    }, [dispatch])
+
+
     const onSubmit = useCallback((event) => {
 
         async function handleSubmit() {
-            const response = await efpApiClient.authenticate(username, password).catch(e => {
-                console.error(e)
+            const response = await efpApiClient.authenticate(username, password).catch(e =>
                 enqueueSnackbar(e.status === 401 ? 'Unauthorized' : e.message, snackBarErrorOptions)
-            }
             )
 
             if (response && response.accessToken) {
@@ -126,26 +147,33 @@ const SignIn = () => {
                             id="password"
                             autoComplete="current-password"
                         />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}
-                        >
-                            {intl.formatMessage({ id: 'signIn' })}
-                        </Button>
+                        <InputLabel id="campaignLabel">Campaign</InputLabel>
+                        {loading ? <CircularProgress /> :
+                            <div>
+                                <Select
+                                    labelId="ipoCode"
+                                    id="ipoCode"
+                                    label='Campaign'
+                                    fullWidth
+                                    variant="outlined"
+                                    value={ipocode}
+                                    onChange={handleIpoCodeChange} >
+                                    {campaigns.map(campaign =>
+                                        <MenuItem key={campaign.id} value={campaign.id}>{campaign.id}</MenuItem>
+                                    )}
+                                </Select>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.submit}
+                                >
+                                    {intl.formatMessage({ id: 'signIn' })}
+                                </Button>
+                            </div>
+                        }
                     </form>
-
-                    <div
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            width: '100%',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                    </div>
                 </div>
             </Paper>
         </Page>

@@ -1,18 +1,15 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { Line, Bar, Doughnut } from 'react-chartjs-2'
 import { useIntl } from 'react-intl'
 import queryString from 'query-string';
 
 import { makeStyles, withTheme } from '@material-ui/core/styles';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Paper from '@material-ui/core/Paper';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-import Grid from '@material-ui/core/Grid';
-
 
 import { prettifyKV, fixedColors } from '../../utils'
 import efpApiClient from '../../services/efpApiClient';
@@ -94,27 +91,21 @@ const containsGbp = text => /value/i.test(text)
 
 function GeoStats({ theme }) {
 
+    const ipocode = useSelector(state => state.campaign.current)
     const intl = useIntl()
-    //TODO extract to campaign selector
-    const IPOCODE = 'BDIPA'
-
     const [stats, setStats] = useState(null);
     const [error, setError] = useState(null);
     useSessionTimeoutHandler(error)
 
     useEffect(() => {
         const endpoint = queryString.stringifyUrl({
-            url: `/admin/campaign/geostats/${IPOCODE}`,
-            // query: {
-            //     from: from ? format(from, DATE_FORMAT) : null,
-            //     to: to ? format(to, DATE_FORMAT) : null
-            // }
+            url: `/admin/campaign/geostats/${ipocode}`,
         }, {
             skipNull: true,
         })
 
         efpApiClient.requestEfpApi(endpoint).then(setStats).catch(setError);
-    }, []);
+    }, [ipocode]);
 
     const classes = useStyles();
 
@@ -131,10 +122,7 @@ function GeoStats({ theme }) {
     //     maintainAspectRatio: true,
     // }
 
-
-
     return (
-
         <Page pageTitle={intl.formatMessage({ id: 'campaignGeoStats' })}>
             <Helmet>
                 <title>{intl.formatMessage({ id: 'campaignGeoStats' })}</title>
@@ -142,7 +130,6 @@ function GeoStats({ theme }) {
             <Scrollbar >
                 {stats ? stats.map(stat =>
                     (<Paper key={stat.title} className={classes.paper} >
-                        {/* {stat.title && <h2 className={classes.title}>{stat.title}</h2>} */}
                         {renderPies(stat, classes)}
                         {/* <Bar data={stat}
                                 width={responsiveSizeHack}

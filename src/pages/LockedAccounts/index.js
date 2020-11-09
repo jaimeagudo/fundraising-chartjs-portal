@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl'
 import { Link } from 'react-router-dom';
 import { ArrayRenderer } from 'components/Generic'
@@ -8,7 +9,7 @@ import efpApiClient from '../../services/efpApiClient';
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
 import { prettifyKV } from '../../utils'
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
@@ -29,6 +30,7 @@ const useStyles = makeStyles({
 });
 
 export function LockedAccounts() {
+    const ipocode = useSelector(state => state.campaign.current)
     const intl = useIntl()
     const classes = useStyles();
     const [error, setError] = useState(null);
@@ -50,14 +52,14 @@ export function LockedAccounts() {
     const onUnlockClick = useCallback((magentoUserId) => {
         async function unlockAccount() {
             const result = await efpApiClient.requestEfpApi(
-                `/admin/customers/${magentoUserId}/unlock/BDIPA`,
+                `/admin/customers/${magentoUserId}/unlock/${ipocode}`,
                 { method: 'PUT', })
                 .catch(setError);
             setResult(result);
             setRequestDate(new Date());
         }
         unlockAccount()
-    }, []);
+    }, [ipocode]);
 
     const onUnlockAllClick = useCallback(() => {
         async function unlockAccount() {

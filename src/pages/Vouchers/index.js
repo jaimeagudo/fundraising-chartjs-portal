@@ -1,21 +1,20 @@
-import React, { useState, useEffect, memo, useCallback } from 'react';
+import React, { useState, useEffect, memo, } from 'react';
 import { Helmet } from 'react-helmet';
-import { useIntl, FormattedMessage } from 'react-intl'
+import { useSelector } from 'react-redux';
+import { useIntl, } from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
 import queryString from 'query-string';
 
 import { ArrayRenderer } from 'components/Generic'
 import efpApiClient from '../../services/efpApiClient';
-import { prettifyKV, fixedColors } from '../../utils'
+import { prettifyKV, } from '../../utils'
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Search from '@material-ui/icons/Search';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import MoneyOff from '@material-ui/icons/MoneyOff';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
@@ -52,9 +51,10 @@ const useStyles = makeStyles((theme) => ({
 
 // https://codesandbox.io/s/k2kqwpvnn3?file=/src/App.js:423-761
 
-const IPOCODE = 'BDIPA'
 
 export function Vouchers() {
+    const ipocode = useSelector(state => state.campaign.current)
+
     const intl = useIntl()
     const classes = useStyles();
     const params = useParams();
@@ -65,7 +65,6 @@ export function Vouchers() {
     const [RedeemUserId, setRedeemUserId] = useState(params.email || '');
     const [BuyerMagentoUserId, setBuyerMagentoUserId] = useState(params.BuyerMagentoUserId || '');
     const [PaymentReference, setPaymentReference] = useState(params.PaymentReference || '');
-    const [requestDate, setRequestDate] = useState(new Date());
     useSessionTimeoutHandler(error)
 
     useEffect(() => {
@@ -73,7 +72,7 @@ export function Vouchers() {
         async function fetchData() {
             const endpoint = queryString.stringifyUrl(
                 {
-                    url: `/admin/vouchers/${IPOCODE}/search`,
+                    url: `/admin/vouchers/${ipocode}/search`,
                     query: { Code, RedeemUserId, BuyerMagentoUserId, PaymentReference, limit: 10 }
                 },
                 { skipEmptyString: true, skipNull: true })
@@ -83,7 +82,7 @@ export function Vouchers() {
         }
         fetchData()
         return () => { ignore = true; }
-    }, [Code, RedeemUserId, PaymentReference, BuyerMagentoUserId, requestDate]);
+    }, [ipocode, Code, RedeemUserId, PaymentReference, BuyerMagentoUserId]);
 
     // const onRefundClick = useCallback((PaymentReference) => {
     //     async function refundClick() {

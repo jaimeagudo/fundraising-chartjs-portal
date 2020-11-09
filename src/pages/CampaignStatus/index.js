@@ -1,23 +1,21 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import CountUp from 'react-countup'
-import { useIntl, FormattedMessage } from 'react-intl'
-import { Line, Bar, Doughnut } from 'react-chartjs-2'
+import { useIntl, } from 'react-intl'
 
 import { makeStyles, withTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Page from 'material-ui-shell/lib/containers/Page/Page'
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import Group from '@material-ui/icons/Group';
 
 import efpApiClient from '../../services/efpApiClient';
-import api from '../../config/api'
 import useSessionTimeoutHandler from 'hooks/useSessionTimeoutHandler'
-import { pretiffyKey, fixedColors } from '../../utils'
+import { pretiffyKey } from '../../utils'
 import { ObjectRenderer, ArrayRenderer } from 'components/Generic'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 function CampaignStatus({ theme }) {
-
+    const ipocode = useSelector(state => state.campaign.current)
     const intl = useIntl()
 
     const [stats, setStats] = useState(null);
@@ -40,9 +38,9 @@ function CampaignStatus({ theme }) {
     useSessionTimeoutHandler(error)
 
     useEffect(() => {
-        efpApiClient.requestEfpApi('/campaign/status/BDIPA').then(setStatus).catch(setError);
-        efpApiClient.requestEfpApi('/admin/campaign/stats/BDIPA').then(setStats).catch(setError);
-    }, []);
+        efpApiClient.requestEfpApi(`/campaign/status/${ipocode}`).then(setStatus).catch(setError);
+        efpApiClient.requestEfpApi(`/admin/campaign/stats/${ipocode}`).then(setStats).catch(setError);
+    }, [ipocode]);
 
     const classes = useStyles();
 
@@ -51,7 +49,6 @@ function CampaignStatus({ theme }) {
             <ArrayRenderer key={index} title={pretiffyKey(key)} rows={obj[key]} columnNames={Object.keys(obj[key][0])} classes={classes} /> :
             <ObjectRenderer key={index} name={key} obj={obj[key]} classes={classes} />
     )
-
 
     return (
         <Page pageTitle={intl.formatMessage({ id: 'campaignStatus' })}>

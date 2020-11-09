@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
 import { useIntl } from 'react-intl'
 import { useParams, Link } from 'react-router-dom';
 
@@ -68,9 +69,10 @@ const MAGENTO_GROUPS = {
 const getColumnNames = (obj, fieldName) => obj && obj[fieldName] && obj[fieldName].length ? Object.keys(obj[fieldName][0] || []) : [];
 
 export function CustomerInformation() {
-    const { magentoUserId } = useParams();
-    const intl = useIntl()
+    const ipocode = useSelector(state => state.campaign.current)
     const classes = useStyles();
+    const intl = useIntl()
+    const { magentoUserId } = useParams();
     const [error, setError] = useState(null);
     useSessionTimeoutHandler(error)
 
@@ -81,7 +83,7 @@ export function CustomerInformation() {
     useEffect(() => {
         async function fetchCustomer() {
             const result = await efpApiClient.requestEfpApi(
-                `/customers/${magentoUserId}/all-information/BDIPA`)
+                `/customers/${magentoUserId}/all-information/${ipocode}`)
                 .catch(setError);
             setCustomer(result);
         }
@@ -95,7 +97,7 @@ export function CustomerInformation() {
         magentoUserId && fetchCustomer() && fetchMagentoCustomer()
         console.log("fetchAll -> magentoUserId", magentoUserId)
 
-    }, [magentoUserId])
+    }, [magentoUserId, ipocode])
 
 
 
@@ -114,13 +116,13 @@ export function CustomerInformation() {
     const onUnlockClick = useCallback(() => {
         async function unlockAccount() {
             const unlockResult = await efpApiClient.requestEfpApi(
-                `/admin/customers/${magentoUserId}/unlock/BDIPA`,
+                `/admin/customers/${magentoUserId}/unlock/${ipocode}`,
                 { method: 'PUT', })
                 .catch(setError);
             setCustomer(unlockResult);
         }
         unlockAccount()
-    }, [magentoUserId])
+    }, [magentoUserId, ipocode])
 
 
 
