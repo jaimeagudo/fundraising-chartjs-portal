@@ -1,4 +1,16 @@
 
+# v1.8.0 / 2020-11-09
+==================
+
+  * EFP-377 (pull request #24)
+  * Fix reducer assignment, bind campaign selector to redux store
+  * Allow sagas to be able to restart in the event of failure
+  * Fix eslint warns, add missing deps
+  * EFP-377 Add select drop on Signin box for portal
+  * Replace ipocode constant with redux-state one
+  * Add campaign reducer/actions/saga
+  * Add redux libraries
+
 # v1.7.1 / 2020-11-04
 ==================
 
