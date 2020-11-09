@@ -6,9 +6,10 @@ import { campaignsLoaded, campaignsLoadingError } from './actions';
 export function* getCampaigns() {
 
     try {
-        const campaigns = yield call([efpApiClient, efpApiClient.requestEfpApi], '/campaigns')
+        const campaigns = yield call([efpApiClient, efpApiClient.requestEfpApi], '/campaign')
         yield put(campaignsLoaded(campaigns))
     } catch (err) {
+        console.error("function*getCampaigns -> err", err)
         yield put(campaignsLoadingError(err));
     }
 }
