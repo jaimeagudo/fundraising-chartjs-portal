@@ -38,6 +38,14 @@ const prettifyKV = (key, value, options = {}) => {
         return <Link to={`/customer/${value} `}><Tooltip title={`Go to ${key} file`}><p>{value}</p></Tooltip></Link>;
     }
 
+    if (/mail/i.test(key)) {
+        return <a href={`mailto:${value}`}>{value} </a>
+    }
+
+    if (/phone/i.test(key)) {
+        return <a href={`tel:${value}`}>{value} </a>
+    }
+
     const isGBP = currencyRegexps.some(re => re.test(key))
     const withPences = fieldsWithPences.includes(key)
     return prettifyValue(value, withPences, isGBP)

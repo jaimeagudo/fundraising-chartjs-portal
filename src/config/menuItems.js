@@ -16,6 +16,7 @@ import StyleIcon from '@material-ui/icons/Style'
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import PublicIcon from '@material-ui/icons/Public';
+import ScoreIcon from '@material-ui/icons/Score';
 
 import allLocales from './locales'
 import allThemes from './themes'
@@ -126,6 +127,12 @@ const getMenuItems = (props) => {
             visible: isAuthorised,
             primaryText: intl.formatMessage({ id: 'investorsRewards' }),
             leftIcon: <Loyalty />,
+        },
+        {
+            value: '/referrals',
+            visible: isAuthorised,
+            primaryText: intl.formatMessage({ id: 'referralsRewardsWinners' }),
+            leftIcon: <ScoreIcon />,
         },
         // {
         //   value: '/dialog_demo',
