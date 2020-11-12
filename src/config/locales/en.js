@@ -32,6 +32,7 @@ const messages = defineMessages({
     lockedCustomerExplanation: 'These customers cannot redeem vouchers cause they have reached the max attempts cap to prevent fraud. They still can operate the rest of the features normally',
     investorsRewards: 'Investors rewards',
     sharesRewards: 'Shares rewards',
+    referralsRewardsWinners: 'Referrals league',
     referralsRewards: 'Referrals rewards',
     topUpStock: 'Top up stock',
     amountToTopUp: 'Amount to Top up',

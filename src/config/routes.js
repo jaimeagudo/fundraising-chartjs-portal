@@ -16,6 +16,7 @@ const Customer = lazy(() => import('../pages/Customers/customer'))
 const Customers = lazy(() => import('../pages/Customers/search'))
 const LockedAccounts = lazy(() => import('../pages/LockedAccounts'))
 const Rewards = lazy(() => import('../pages/Rewards/rewards'))
+const Referrals = lazy(() => import('../pages/Referrals'))
 const Reward = lazy(() => import('../pages/Rewards/reward'))
 const Vouchers = lazy(() => import('../pages/Vouchers'))
 
@@ -39,6 +40,7 @@ const routes = [
     <PrivateRoute path="/customer/:magentoUserId" exact component={Customer} />,
     <PrivateRoute path="/lockedAccounts" exact component={LockedAccounts} />,
     <PrivateRoute path="/rewards" exact component={Rewards} />,
+    <PrivateRoute path="/referrals" exact component={Referrals} />,
     <PrivateRoute path="/rewards/:rewardId/:rewardName?" exact component={Reward} />,
     <PrivateRoute path="/vouchers" exact component={Vouchers} />,
     <PrivateRoute path="/vouchers/:code" exact component={Vouchers} />,
