@@ -1,4 +1,10 @@
 
+# v1.9.0 / 2020-11-16
+==================
+
+  * Add mailto tel links globally
+  * EFP-379 Add /referrals page with weekly winners
+
 # v1.8.0 / 2020-11-09
 ==================
 
