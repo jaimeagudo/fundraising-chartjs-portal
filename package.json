@@ -1,6 +1,6 @@
 {
   "name": "efp-support-web",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "private": true,
   "dependencies": {
     "@babel/core": "7.9.0",
